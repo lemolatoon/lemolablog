@@ -12,7 +12,7 @@
     "lint:eslint": "next lint",
     "lint:eslint:fix": "yarn lint:eslint --fix",
     "lint:ci:eslint": "yarn lint:eslint --max-warnings 0",
-    "lint:fmt": "yarn prettier './**/*.{js,jsx,ts,tsx,json}'",
+    "lint:fmt": "yarn prettier './**/*.{js,jsx,ts,tsx,json,yml}'",
     "lint:fmt:fix": "yarn lint:fmt --write",
     "lint:ci:fmt": "yarn lint:fmt --check",
     "lint:ci": "yarn lint:ci:eslint && yarn lint:ci:fmt"
