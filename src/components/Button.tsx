@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { FontLevel, fontLevel2FontSize } from "../types/style";
 
 type ButtonProps = {
@@ -11,7 +11,15 @@ export const Button = styled.button<ButtonProps>`
   background-color: ${(props) => props.bg ?? "inherit"};
   font-size: ${(props) => fontLevel2FontSize(props.fontLevel)};
   &:hover {
-    filter: blur(3px);
-    scale: 1.5;
+    ${(props) =>
+      props.transparent
+        ? css`
+            filter: blur(3px);
+            scale: 1.5;
+          `
+        : css`
+            filter: brightness(0.3);
+            filter: contrast(0.5);
+          `}
   }
 `;
