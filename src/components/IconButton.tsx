@@ -5,6 +5,7 @@ import { ButtonProps, HoverButton, TransparentButton } from "./Button";
 type IconButtonProps = {
   children: React.ReactNode;
   icon: IconType;
+  onClick?: () => void;
 } & ButtonProps;
 
 const HoverButtonLikeStyledDiv = HoverButton.withComponent("div");
@@ -12,12 +13,15 @@ const HoverButtonLikeStyledDiv = HoverButton.withComponent("div");
 export const IconButton = ({
   children,
   icon: Icon,
+  onClick,
   ...buttonProps
 }: IconButtonProps) => {
   return (
     <HoverButtonLikeStyledDiv {...buttonProps}>
       <Icon />
-      <TransparentButton {...buttonProps}>{children}</TransparentButton>
+      <TransparentButton {...buttonProps} onClick={onClick}>
+        {children}
+      </TransparentButton>
     </HoverButtonLikeStyledDiv>
   );
 };
