@@ -2,9 +2,12 @@ import React from "react";
 import styled from "styled-components";
 import { Button } from "../components/Button";
 import { UnderlinedLink } from "../components/UnderlinedLink";
-import { FaSignInAlt } from "react-icons/fa";
+import { FaSignInAlt, FaEdit } from "react-icons/fa";
 import { IconType } from "react-icons/lib";
 import { IconButton } from "../components/IconButton";
+import Image from "next/image";
+import lemolablogImage from "public/lemolablog.png";
+import Link from "next/link";
 
 type HeaderContainerProps = {
   height?: string;
@@ -17,9 +20,14 @@ const HeaderContainer = styled.div<HeaderContainerProps>`
   flex-direction: column;
 `;
 
-const OsyareLine = styled.div`
+const HeaderContentContainer = styled.div`
+  display: flex;
+  margin: 0;
+`;
+
+const OsyareLine = styled.div<{ h: number }>`
   background-color: #1c285c;
-  height: 5px;
+  height: ${(props) => props.h - 3}px; // substract margin-bottom
   margin-top: 0;
   margin-left: 3px;
   margin-right: 3px;
@@ -29,10 +37,13 @@ const HeaderButtonWrapper = styled.div`
   margin-top: auto;
   margin-bottom: 0;
   display: flex;
+  > * {
+    padding-left: 1em;
+  }
 `;
-const AlingnFlexEndWrapper = styled.div`
-  margin-left: auto;
-  margin-right: 5px;
+const AlignFlexStartWrapper = styled.div`
+  margin-right: auto;
+  margin-left: 5px;
 `;
 
 type headerLinkProps = {
@@ -56,16 +67,29 @@ const HeaderLink = ({ href, icon, display }: headerLinkProps) => {
     </UnderlinedLink>
   );
 };
+const HomeLink = ({ height }: { height: number }) => {
+  return (
+    <Link href="/">
+      <Image src={lemolablogImage} alt="lemolablog" height={height} />
+    </Link>
+  );
+};
 
 const HeaderLayout = () => {
+  const height = 80;
+  const osyareLineHeight = 10;
   return (
-    <HeaderContainer height="80px">
-      <HeaderButtonWrapper>
-        <AlingnFlexEndWrapper>
+    <HeaderContainer height={`${height}px`}>
+      <HeaderContentContainer>
+        <AlignFlexStartWrapper>
+          <HomeLink height={height - osyareLineHeight - 5} />
+        </AlignFlexStartWrapper>
+        <HeaderButtonWrapper>
+          <HeaderLink href="edit" icon={FaEdit} display="Edit" />
           <HeaderLink href="login" icon={FaSignInAlt} display="Login" />
-        </AlingnFlexEndWrapper>
-      </HeaderButtonWrapper>
-      <OsyareLine />
+        </HeaderButtonWrapper>
+      </HeaderContentContainer>
+      <OsyareLine h={osyareLineHeight} />
     </HeaderContainer>
   );
 };
