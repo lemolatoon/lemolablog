@@ -170,11 +170,15 @@ const Edit = () => {
   const onMarkdownChanged = (changedMarkdown: string) => {
     setMarkdown(changedMarkdown);
   };
+  const onSubmit = () => {
+    console.error("submit is not yet implemented.");
+  };
   return (
     <EditLayout
       onMarkdownSelected={onMarkdownSelected}
       onRenderedSelected={onRenderedSelected}
       onMarkdownChanged={onMarkdownChanged}
+      onSubmit={onSubmit}
       selected={kind}
       bg={background}
       markdown={markdown}
