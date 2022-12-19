@@ -1,7 +1,10 @@
-import Link from "next/link";
 import React from "react";
 import styled from "styled-components";
 import { Button } from "../components/Button";
+import { UnderlinedLink } from "../components/UnderlinedLink";
+import { FaSignInAlt } from "react-icons/fa";
+import { IconType } from "react-icons/lib";
+import { IconButton } from "../components/IconButton";
 
 type HeaderContainerProps = {
   height?: string;
@@ -32,16 +35,34 @@ const AlingnFlexEndWrapper = styled.div`
   margin-right: 5px;
 `;
 
+type headerLinkProps = {
+  href: string;
+  icon?: IconType;
+  display?: React.ReactNode;
+};
+const HeaderLink = ({ href, icon, display }: headerLinkProps) => {
+  const buttonProps = {
+    children: display,
+    fontLevel: 5,
+    transparent: true,
+  } as const;
+  return (
+    <UnderlinedLink href={href}>
+      {icon ? (
+        <IconButton icon={icon} {...buttonProps} />
+      ) : (
+        <Button {...buttonProps} />
+      )}
+    </UnderlinedLink>
+  );
+};
+
 const HeaderLayout = () => {
   return (
     <HeaderContainer height="80px">
       <HeaderButtonWrapper>
         <AlingnFlexEndWrapper>
-          <Link href={"login"}>
-            <Button transparent={true} fontLevel={5}>
-              Login
-            </Button>
-          </Link>
+          <HeaderLink href="login" icon={FaSignInAlt} display="Login" />
         </AlingnFlexEndWrapper>
       </HeaderButtonWrapper>
       <OsyareLine />
