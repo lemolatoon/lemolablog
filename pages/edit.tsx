@@ -216,7 +216,7 @@ type PreviewProps = {
   innerHtml: string;
   bg: string;
 };
-const Preview = ({ title, bg, innerHtml }: PreviewProps) => {
+export const Preview = ({ title, bg, innerHtml }: PreviewProps) => {
   return (
     <>
       <TitleDiv bg={bg}>
