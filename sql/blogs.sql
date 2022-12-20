@@ -2,7 +2,7 @@
 create table blogs (
   id uuid references auth.users not null primary key,
   updated_at timestamp with time zone,
-  post_id bigint,
+  post_id serial not null,
   raw_markdown text,
   converted_html text,
   is_public boolean,
@@ -13,6 +13,9 @@ create table blogs (
 -- See https://supabase.com/docs/guides/auth/row-level-security for more details.
 alter table blogs
   enable row level security;
+
+create policy "blogs are viewwable by everyone if it's public." on blogs
+  for select using (is_public);
 
 create policy "Users can insert their own blogs." on blogs
   for insert with check (auth.uid() = id);
