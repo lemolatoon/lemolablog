@@ -58,7 +58,7 @@ export const useFetchBlogTitles =
         return { data: data as Pick<Post, "title" | "post_id">[] };
       }
     } catch (err) {
-      alert("error fetching past blogs data!");
+      alert("error fetching blog titles!");
       console.log(err);
     }
     return { data: null };
@@ -87,7 +87,7 @@ export const useFetchBlogByPostId = () => async (post_id: number) => {
       };
     }
   } catch (err) {
-    alert("error fetching past blogs data!");
+    alert("error fetching blog data!");
   } finally {
     setLoading(false);
   }
@@ -111,7 +111,7 @@ export const useFetchHtmlByPostId =
         return data as Pick<Post, "title" | "converted_html">;
       }
     } catch (err) {
-      alert("error fetching past blogs data!");
+      console.error(err);
     }
     return null;
   };
