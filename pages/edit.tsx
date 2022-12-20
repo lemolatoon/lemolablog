@@ -4,6 +4,7 @@ import markdownToHtml from "zenn-markdown-html";
 import { IconButton } from "../src/components/IconButton";
 import { useDebounce } from "../src/hooks/hooks";
 import { FaUpload } from "react-icons/fa";
+import { BiCaretDownSquare } from "react-icons/bi";
 import { useSession, useSupabaseClient } from "@supabase/auth-helpers-react";
 import Link from "next/link";
 import { Header } from "../src/Header/Header";
@@ -25,6 +26,11 @@ const WideTextArea = styled.textarea<WideTextAreaProps>`
   border-radius: 4;
   background-color: ${(props) => props.bg};
   border-radius: 10px;
+`;
+
+const TitleInput = styled(WideTextArea.withComponent("input"))`
+  min-height: 30px;
+  margin-bottom: 5px;
 `;
 
 type BoxWithTextProps = {
@@ -55,6 +61,9 @@ type TabProps = {
 const FlexWrapeer = styled.div`
   display: flex;
 `;
+const TabWrapper = styled(FlexWrapeer)`
+  margin: 0;
+`;
 type TabKind = "markdown" | "rendered";
 const Tab = ({
   onMarkdownSelected,
@@ -62,7 +71,7 @@ const Tab = ({
   selected,
 }: TabProps) => {
   return (
-    <FlexWrapeer>
+    <TabWrapper>
       <BoxWithText
         onClick={() => {
           onMarkdownSelected();
@@ -79,7 +88,7 @@ const Tab = ({
       >
         Preview
       </BoxWithText>
-    </FlexWrapeer>
+    </TabWrapper>
   );
 };
 
@@ -121,58 +130,134 @@ type EditLayoutProps = {
   onMarkdownSelected: () => void;
   onRenderedSelected: () => void;
   onMarkdownChanged: (markdown: string) => void;
+  onTitleChanged: (title: string) => void;
   onSubmit: () => void;
   disabled: boolean;
   selected: TabKind;
   bg: string;
+  title: string;
   markdown: string;
   innerHtml: string;
 };
 
-type BlogDivProps = {
+type MarkdownAreaProps = {
   bg: string;
+  title: string;
+  markdown: string;
+  onTitleChanged: (title: string) => void;
+  onMarkdownChanged: (markdown: string) => void;
 };
-const BlogDiv = styled.div<BlogDivProps>`
+const MarkdownArea = ({
+  bg,
+  title,
+  markdown,
+  onMarkdownChanged,
+  onTitleChanged,
+}: MarkdownAreaProps) => {
+  const font =
+    "ui-monospace,SFMono-Regular,SF Mono,Menlo,Consolas,Liberation Mono,monospace" as const;
+  return (
+    <>
+      <TitleInput
+        bg={bg}
+        fontFamily={font}
+        value={title}
+        onChange={(e) => onTitleChanged(e.target.value)}
+      />
+      <WideTextArea
+        fontFamily={font}
+        bg={bg}
+        value={markdown}
+        onChange={(e) => onMarkdownChanged(e.target.value)}
+      />
+    </>
+  );
+};
+
+const TitleDiv = styled.div<TitleDivProps>`
   background-color: ${(props) => props.bg};
+  margin-top: 0;
   margin-left: 3em;
   margin-right: 3em;
   padding-left: 1em;
   padding-right: 1em;
+  margin-bottom: 1em;
   border-radius: 10px;
-  min-height: 80vh;
+  min-height: 30px;
   width: 90%;
+  > h1 {
+    margin: 0;
+    padding: 0;
+  }
+`;
+
+type TitleDivProps = {
+  bg: string;
+};
+const BlogDiv = styled(TitleDiv)`
+  min-height: 80vh;
+`;
+
+type PreviewProps = {
+  title: string;
+  innerHtml: string;
+  bg: string;
+};
+const Preview = ({ title, bg, innerHtml }: PreviewProps) => {
+  return (
+    <>
+      <TitleDiv bg={bg}>
+        <h1>{title}</h1>
+      </TitleDiv>
+      <BlogDiv
+        className="znc"
+        bg={bg}
+        dangerouslySetInnerHTML={{ __html: innerHtml }}
+      />
+    </>
+  );
+};
+const AlignEndWrapper = styled.div`
+  margin-left: auto;
+  margin-right: 1em;
 `;
 const EditLayout = ({
   onMarkdownSelected,
   onRenderedSelected,
   onMarkdownChanged,
+  onTitleChanged,
   onSubmit,
   disabled,
   selected,
   bg,
+  title,
   innerHtml,
   markdown,
 }: EditLayoutProps) => {
   return (
     <>
-      <Tab
-        onMarkdownSelected={onMarkdownSelected}
-        onRenderedSelected={onRenderedSelected}
-        selected={selected}
-      />
+      <FlexWrapeer>
+        <Tab
+          onMarkdownSelected={onMarkdownSelected}
+          onRenderedSelected={onRenderedSelected}
+          selected={selected}
+        />
+        <AlignEndWrapper>
+          <IconButton icon={BiCaretDownSquare} fontLevel={2}>
+            これまでの記事
+          </IconButton>
+        </AlignEndWrapper>
+      </FlexWrapeer>
       {selected === "markdown" ? (
-        <WideTextArea
-          fontFamily="ui-monospace,SFMono-Regular,SF Mono,Menlo,Consolas,Liberation Mono,monospace"
+        <MarkdownArea
           bg={bg}
-          value={markdown}
-          onChange={(e) => onMarkdownChanged(e.target.value)}
+          title={title}
+          markdown={markdown}
+          onMarkdownChanged={onMarkdownChanged}
+          onTitleChanged={onTitleChanged}
         />
       ) : (
-        <BlogDiv
-          className="znc"
-          bg={bg}
-          dangerouslySetInnerHTML={{ __html: innerHtml }}
-        />
+        <Preview title={title} bg={bg} innerHtml={innerHtml} />
       )}
       <JustifyCenterWrapper>
         <SubmitButton onSubmit={onSubmit} disabled={disabled} />
@@ -183,9 +268,11 @@ const EditLayout = ({
 
 const Edit = () => {
   const background = "#a3afe3";
+  const [title, setTitle] = useState<string>("");
   const [markdown, setMarkdown] = useState<string>("");
   const [html, setHtml] = useState<string>("");
   const [kind, setKind] = useState<TabKind>("markdown");
+  const [postId, setPostId] = useState<number | undefined>(undefined);
   const [loading, setLoading] = useState<boolean>(false);
   const debounce = useDebounce(1000);
   useEffect(() => {
@@ -197,14 +284,21 @@ const Edit = () => {
   const onRenderedSelected = () => {
     setKind("rendered");
   };
+  const onTitleChanged = (changedTitle: string) => {
+    setTitle(changedTitle);
+  };
   const onMarkdownChanged = (changedMarkdown: string) => {
     setMarkdown(changedMarkdown);
   };
   const session = useSession();
   const user = session?.user;
   const supabase = useSupabaseClient();
-  // TODO: complete writing this function
-  const insertBlog = async (markdown: string, html: string) => {
+  const insertBlog = async (
+    postId: number | undefined,
+    title: string,
+    markdown: string,
+    html: string
+  ) => {
     try {
       setLoading(true);
 
@@ -215,6 +309,8 @@ const Edit = () => {
       }
       const inserts = {
         id: user.id,
+        post_id: postId,
+        title: title,
         raw_markdown: markdown,
         converted_html: html,
         is_public: true,
@@ -233,7 +329,7 @@ const Edit = () => {
     }
   };
   const onSubmit = () => {
-    insertBlog(markdown, html);
+    insertBlog(postId, title, markdown, html);
   };
   return (
     <>
@@ -241,11 +337,13 @@ const Edit = () => {
       <EditLayout
         onMarkdownSelected={onMarkdownSelected}
         onRenderedSelected={onRenderedSelected}
+        onTitleChanged={onTitleChanged}
         onMarkdownChanged={onMarkdownChanged}
         onSubmit={onSubmit}
         disabled={loading}
         selected={kind}
         bg={background}
+        title={title}
         markdown={markdown}
         innerHtml={html}
       />
