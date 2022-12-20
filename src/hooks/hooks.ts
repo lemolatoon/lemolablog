@@ -58,7 +58,7 @@ export const useFetchBlogTitles =
         return { data: data as Pick<Post, "title" | "post_id">[] };
       }
     } catch (err) {
-      alert("error fetching past blogs data!");
+      alert("error fetching blog titles!");
       console.log(err);
     }
     return { data: null };
@@ -87,39 +87,34 @@ export const useFetchBlogByPostId = () => async (post_id: number) => {
       };
     }
   } catch (err) {
-    alert("error fetching past blogs data!");
+    alert("error fetching blog data!");
   } finally {
     setLoading(false);
   }
   return { data: null, loading };
 };
 
-export const useFetchHtmlByPostId = () => async (post_id: number) => {
-  const [loading, setLoading] = useState<boolean>(false);
-  const supabase = useSupabaseClient();
-  setLoading(true);
+export const useFetchHtmlByPostId =
+  () => async (supabase: PublicSupabaseClient, post_id: number) => {
+    try {
+      const { data, error, status } = await supabase
+        .from("blogs")
+        .select(`title, converted_html`)
+        .eq("post_id", post_id)
+        .single();
 
-  try {
-    const { data, error, status } = await supabase
-      .from("blogs")
-      .select(`converted_html`)
-      .eq("post_id", post_id)
-      .single();
+      if (error && status !== 406) {
+        throw error;
+      }
 
-    if (error && status !== 406) {
-      throw error;
+      if (data) {
+        return data as Pick<Post, "title" | "converted_html">;
+      }
+    } catch (err) {
+      console.error(err);
     }
-
-    if (data) {
-      return { data: data as Pick<Post, "converted_html">, loading };
-    }
-  } catch (err) {
-    alert("error fetching past blogs data!");
-  } finally {
-    setLoading(false);
-  }
-  return { data: null, loading };
-};
+    return null;
+  };
 
 export const usePostedTitles = () => {
   const supabase = useSupabaseClient();

@@ -87,8 +87,8 @@ const HeaderLayout = ({ height }: HeaderLayoutProps) => {
           <HomeLink height={height - osyareLineHeight - 5} />
         </AlignFlexStartWrapper>
         <HeaderButtonWrapper>
-          <HeaderLink href="edit" icon={FaEdit} display="Edit" />
-          <HeaderLink href="login" icon={FaSignInAlt} display="Login" />
+          <HeaderLink href="/edit" icon={FaEdit} display="Edit" />
+          <HeaderLink href="/login" icon={FaSignInAlt} display="Login" />
         </HeaderButtonWrapper>
       </HeaderContentContainer>
       <OsyareLine h={osyareLineHeight} />

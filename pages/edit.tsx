@@ -121,7 +121,7 @@ const SubmitButton = ({ onSubmit, disabled }: SubmitButtonProps) => {
       ) : (
         <div>
           投稿にはまず
-          <Link href="login">Login</Link>
+          <Link href="/login">Login</Link>
           が必要です。
         </div>
       )}
@@ -216,7 +216,7 @@ type PreviewProps = {
   innerHtml: string;
   bg: string;
 };
-const Preview = ({ title, bg, innerHtml }: PreviewProps) => {
+export const Preview = ({ title, bg, innerHtml }: PreviewProps) => {
   return (
     <>
       <TitleDiv bg={bg}>
