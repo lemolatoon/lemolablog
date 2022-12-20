@@ -10,6 +10,7 @@ import Link from "next/link";
 import { Header } from "../src/Header/Header";
 import { BannerMenu } from "../src/components/BannerMenu";
 import { Button } from "../src/components/Button";
+import { Post } from "../src/types/supabase";
 
 type FontFamilyKind =
   | "Ubuntu Mono"
@@ -312,16 +313,6 @@ const EditLayout = ({
   );
 };
 
-type Post = {
-  id: string;
-  post_id: number;
-  title: string;
-  raw_markdown: string;
-  converted_html: string;
-  is_public: boolean;
-  is_deleted: boolean;
-  updated_at: string;
-};
 const Edit = () => {
   const background = "#a3afe3";
   const [title, setTitle] = useState<string>("");
