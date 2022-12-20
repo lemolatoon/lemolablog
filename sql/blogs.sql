@@ -2,7 +2,7 @@
 create table blogs (
   id uuid references auth.users not null primary key,
   updated_at timestamp with time zone,
-  post_id bigint,
+  post_id serial not null,
   raw_markdown text,
   converted_html text,
   is_public boolean,
