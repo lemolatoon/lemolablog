@@ -6,6 +6,7 @@ type IconButtonProps = {
   children: React.ReactNode;
   icon: IconType;
   onClick?: () => void;
+  type?: React.ComponentProps<"button">["type"];
   disabled?: boolean;
 } & ButtonProps;
 
@@ -15,13 +16,19 @@ export const IconButton = ({
   children,
   icon: Icon,
   onClick,
+  type,
   disabled,
   ...buttonProps
 }: IconButtonProps) => {
   return (
     <HoverButtonLikeStyledDiv {...buttonProps}>
       <Icon />
-      <TransparentButton {...buttonProps} onClick={onClick} disabled={disabled}>
+      <TransparentButton
+        {...buttonProps}
+        onClick={onClick}
+        disabled={disabled}
+        type={type}
+      >
         {children}
       </TransparentButton>
     </HoverButtonLikeStyledDiv>

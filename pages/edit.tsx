@@ -2,12 +2,14 @@ import React, { useEffect, useState } from "react";
 import styled, { css } from "styled-components";
 import markdownToHtml from "zenn-markdown-html";
 import { IconButton } from "../src/components/IconButton";
-import { useDebounce } from "../src/hooks/hooks";
+import { useDebounce, useToggle } from "../src/hooks/hooks";
 import { FaUpload } from "react-icons/fa";
 import { BiCaretDownSquare } from "react-icons/bi";
 import { useSession, useSupabaseClient } from "@supabase/auth-helpers-react";
 import Link from "next/link";
 import { Header } from "../src/Header/Header";
+import { BannerMenu } from "../src/components/BannerMenu";
+import { Button } from "../src/components/Button";
 
 type FontFamilyKind =
   | "Ubuntu Mono"
@@ -35,11 +37,12 @@ const TitleInput = styled(WideTextArea.withComponent("input"))`
 
 type BoxWithTextProps = {
   selected: boolean;
+  height: string;
 };
 const BoxWithText = styled.div<BoxWithTextProps>`
   padding: 0;
   margin: 0;
-  height: 30px;
+  height: ${(props) => props.height};
   width: 200px;
   background-color: #808080;
   ${(props) =>
@@ -57,6 +60,7 @@ type TabProps = {
   onMarkdownSelected: () => void;
   onRenderedSelected: () => void;
   selected: TabKind;
+  height: string;
 };
 const FlexWrapeer = styled.div`
   display: flex;
@@ -69,6 +73,7 @@ const Tab = ({
   onMarkdownSelected,
   onRenderedSelected,
   selected,
+  height,
 }: TabProps) => {
   return (
     <TabWrapper>
@@ -77,6 +82,7 @@ const Tab = ({
           onMarkdownSelected();
         }}
         selected={selected === "markdown"}
+        height={height}
       >
         MarkDown
       </BoxWithText>
@@ -85,6 +91,7 @@ const Tab = ({
           onRenderedSelected();
         }}
         selected={selected === "rendered"}
+        height={height}
       >
         Preview
       </BoxWithText>
@@ -131,9 +138,14 @@ type EditLayoutProps = {
   onRenderedSelected: () => void;
   onMarkdownChanged: (markdown: string) => void;
   onTitleChanged: (title: string) => void;
+  onPreviousPostsToggle: () => void;
+  isPreviousPostsButtonOpen: boolean;
+  pastPostsButtons: React.ReactNode[];
   onSubmit: () => void;
   disabled: boolean;
   selected: TabKind;
+  tabHeight: string;
+  headerHeight: string;
   bg: string;
   title: string;
   markdown: string;
@@ -217,6 +229,32 @@ const Preview = ({ title, bg, innerHtml }: PreviewProps) => {
     </>
   );
 };
+
+type PreviousPostsMenu = {
+  onClick: () => void;
+  children: React.ReactNode[];
+  headerHeight: string;
+  isOpen: boolean;
+};
+const PreviousPostsMenu = ({
+  onClick,
+  children,
+  headerHeight,
+  isOpen,
+}: PreviousPostsMenu) => {
+  return (
+    <>
+      <AlignEndWrapper>
+        <IconButton icon={BiCaretDownSquare} fontLevel={2} onClick={onClick}>
+          これまでの記事
+        </IconButton>
+      </AlignEndWrapper>
+      <BannerMenu headerHeight={headerHeight} isOpen={isOpen}>
+        {children}
+      </BannerMenu>
+    </>
+  );
+};
 const AlignEndWrapper = styled.div`
   margin-left: auto;
   margin-right: 1em;
@@ -226,7 +264,12 @@ const EditLayout = ({
   onRenderedSelected,
   onMarkdownChanged,
   onTitleChanged,
+  onPreviousPostsToggle,
+  isPreviousPostsButtonOpen,
+  pastPostsButtons,
   onSubmit,
+  headerHeight,
+  tabHeight,
   disabled,
   selected,
   bg,
@@ -241,12 +284,15 @@ const EditLayout = ({
           onMarkdownSelected={onMarkdownSelected}
           onRenderedSelected={onRenderedSelected}
           selected={selected}
+          height={tabHeight}
         />
-        <AlignEndWrapper>
-          <IconButton icon={BiCaretDownSquare} fontLevel={2}>
-            これまでの記事
-          </IconButton>
-        </AlignEndWrapper>
+        <PreviousPostsMenu
+          onClick={onPreviousPostsToggle}
+          isOpen={isPreviousPostsButtonOpen}
+          headerHeight={`calc(${headerHeight} + ${tabHeight})`}
+        >
+          {pastPostsButtons}
+        </PreviousPostsMenu>
       </FlexWrapeer>
       {selected === "markdown" ? (
         <MarkdownArea
@@ -266,14 +312,28 @@ const EditLayout = ({
   );
 };
 
+type Post = {
+  id: string;
+  post_id: number;
+  title: string;
+  raw_markdown: string;
+  converted_html: string;
+  is_public: boolean;
+  is_deleted: boolean;
+  updated_at: string;
+};
 const Edit = () => {
   const background = "#a3afe3";
   const [title, setTitle] = useState<string>("");
+  const [pastTitles, setPastTitles] = useState<
+    Pick<Post, "title" | "post_id">[] | null
+  >(null);
   const [markdown, setMarkdown] = useState<string>("");
   const [html, setHtml] = useState<string>("");
   const [kind, setKind] = useState<TabKind>("markdown");
   const [postId, setPostId] = useState<number | undefined>(undefined);
   const [loading, setLoading] = useState<boolean>(false);
+  const { isOpen, onToggle, onClose } = useToggle();
   const debounce = useDebounce(1000);
   useEffect(() => {
     debounce(() => setHtml(markdownToHtml(markdown)));
@@ -317,8 +377,15 @@ const Edit = () => {
         is_deleted: false,
         updated_at: new Date().toISOString(),
       };
+      let error;
 
-      const { error } = await supabase.from("blogs").insert(inserts);
+      if (postId) {
+        error = (
+          await supabase.from("blogs").update(inserts).eq("post_id", postId)
+        ).error;
+      } else {
+        error = (await supabase.from("blogs").insert(inserts)).error;
+      }
       if (error) throw error;
       alert("Blog published!!");
     } catch (error) {
@@ -326,20 +393,148 @@ const Edit = () => {
       console.log(error);
     } finally {
       setLoading(false);
+      fetchBlogTitles();
     }
   };
   const onSubmit = () => {
     insertBlog(postId, title, markdown, html);
   };
+
+  // fetch blog data
+  const fetchBlogTitles = async () => {
+    setLoading(true);
+
+    try {
+      if (!user) {
+        alert("Login is required for fetch past blogs!");
+        setLoading(false);
+        return;
+      }
+      console.log(user.id);
+      const { data, error, status } = await supabase
+        .from("blogs")
+        .select(`title, post_id`)
+        .eq("id", user.id);
+
+      if (error && status !== 406) {
+        throw error;
+      }
+
+      console.log(data);
+      if (data) {
+        setPastTitles(data);
+      }
+    } catch (err) {
+      alert("error fetching past blogs data!");
+      console.log(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchBlogByPostId = async (post_id: number) => {
+    setLoading(true);
+
+    try {
+      if (!user) {
+        alert("Login is required for fetch past blogs!");
+        setLoading(false);
+        return;
+      }
+      const { data, error, status } = await supabase
+        .from("blogs")
+        .select(`raw_markdown, converted_html`)
+        .eq("id", user.id)
+        .eq("post_id", post_id)
+        .single();
+
+      if (error && status !== 406) {
+        throw error;
+      }
+
+      if (data) {
+        return data as Pick<Post, "raw_markdown" | "converted_html">;
+      }
+    } catch (err) {
+      alert("error fetching past blogs data!");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const setBlogComponents = (
+    title: string,
+    markdown: string,
+    html: string,
+    postId: number | undefined
+  ) => {
+    setTitle(title);
+    setMarkdown(markdown);
+    setHtml(html);
+    setPostId(postId);
+  };
+  const resetBlogComponents = () => setBlogComponents("", "", "", undefined);
+
+  useEffect(() => {
+    fetchBlogTitles();
+  }, [user, supabase]);
+
+  const pastPostsButtons = [
+    <Button
+      key={0}
+      transparent={false}
+      fontLevel={3}
+      onClick={() => {
+        resetBlogComponents();
+        onClose();
+      }}
+      color="white"
+    >
+      Reset
+    </Button>,
+    ...(pastTitles
+      ? pastTitles.map(({ title, post_id }, idx) => {
+          const onClick = async () => {
+            const blogInfos = await fetchBlogByPostId(post_id);
+            if (blogInfos)
+              setBlogComponents(
+                title,
+                blogInfos.raw_markdown,
+                blogInfos.converted_html,
+                post_id
+              );
+            onClose();
+          };
+          return (
+            <Button
+              key={idx + 1}
+              transparent={false}
+              fontLevel={3}
+              onClick={onClick}
+              color="white"
+            >
+              {title}
+            </Button>
+          );
+        })
+      : []),
+  ];
+  const headerHeight = 80;
+  const tabHeight = "30px";
   return (
     <>
-      <Header />
+      <Header height={headerHeight} />
       <EditLayout
         onMarkdownSelected={onMarkdownSelected}
         onRenderedSelected={onRenderedSelected}
         onTitleChanged={onTitleChanged}
         onMarkdownChanged={onMarkdownChanged}
+        onPreviousPostsToggle={onToggle}
+        isPreviousPostsButtonOpen={isOpen}
+        pastPostsButtons={pastPostsButtons}
         onSubmit={onSubmit}
+        tabHeight={tabHeight}
+        headerHeight={`${headerHeight}px`}
         disabled={loading}
         selected={kind}
         bg={background}

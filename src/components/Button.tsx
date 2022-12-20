@@ -2,10 +2,12 @@ import styled, { css } from "styled-components";
 import { FontLevel, fontLevel2FontSize } from "../types/style";
 
 export type HoverButtonProps = {
+  color?: string;
   transparent?: boolean;
 };
 
 export type TransparentButtonProps = {
+  color?: string;
   transparent?: boolean;
   bg?: string;
   fontLevel: FontLevel;
@@ -14,6 +16,7 @@ export type TransparentButtonProps = {
 export type ButtonProps = TransparentButtonProps & HoverButtonProps;
 
 export const Hover = (props: HoverButtonProps) => css`
+  color: ${props.color};
   &:hover {
     ${props.transparent
       ? css`
@@ -28,6 +31,7 @@ export const Hover = (props: HoverButtonProps) => css`
 `;
 
 const Transparent = (props: TransparentButtonProps) => css`
+  color: ${props.color};
   border: ${props.transparent ? "none" : "solid"};
   background-color: ${props.bg ?? "inherit"};
   font-size: ${fontLevel2FontSize(props.fontLevel)};

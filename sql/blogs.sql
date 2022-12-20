@@ -14,6 +14,9 @@ create table blogs (
 alter table blogs
   enable row level security;
 
+create policy "blogs are viewwable by everyone if it's public." on blogs
+  for select using (is_public);
+
 create policy "Users can insert their own blogs." on blogs
   for insert with check (auth.uid() = id);
 

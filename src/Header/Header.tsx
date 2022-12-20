@@ -75,8 +75,10 @@ const HomeLink = ({ height }: { height: number }) => {
   );
 };
 
-const HeaderLayout = () => {
-  const height = 80;
+type HeaderLayoutProps = {
+  height: number; //px
+};
+const HeaderLayout = ({ height }: HeaderLayoutProps) => {
   const osyareLineHeight = 10;
   return (
     <HeaderContainer height={`${height}px`}>
@@ -94,10 +96,13 @@ const HeaderLayout = () => {
   );
 };
 
-export const Header = () => {
+type HeaderProps = {
+  height?: number;
+};
+export const Header = ({ height }: HeaderProps) => {
   return (
     <header>
-      <HeaderLayout />
+      <HeaderLayout height={height ?? 80} />
     </header>
   );
 };
