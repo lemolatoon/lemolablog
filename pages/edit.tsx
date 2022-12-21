@@ -1,8 +1,12 @@
 import React, { useEffect, useState } from "react";
 import styled, { css } from "styled-components";
 import { IconButton } from "../src/components/IconButton";
-import { useHtmlToMarkdown, useToggle } from "../src/hooks/hooks";
-import { FaUpload } from "react-icons/fa";
+import {
+  useHtmlToMarkdown,
+  useToggle,
+  useUploadImageToSupabaseAndGetUrl,
+} from "../src/hooks/hooks";
+import { FaUpload, FaImage } from "react-icons/fa";
 import { BiCaretDownSquare } from "react-icons/bi";
 import { useSession, useSupabaseClient } from "@supabase/auth-helpers-react";
 import Link from "next/link";
@@ -12,6 +16,7 @@ import { Button } from "../src/components/Button";
 import { Post } from "../src/types/supabase";
 import { THEME_COLOR1 } from "../styles/colors";
 import { Footer } from "../src/Footer/Footer";
+import { IconInput } from "../src/components/IconInput";
 
 type FontFamilyKind =
   | "Ubuntu Mono"
@@ -22,6 +27,7 @@ type WideTextAreaProps = {
 };
 
 const WideTextArea = styled.textarea<WideTextAreaProps>`
+  padding: 1em;
   margin-left: 3em;
   margin-right: 3em;
   width: 90%;
@@ -156,6 +162,7 @@ type EditLayoutProps = {
   onRenderedSelected: () => void;
   onMarkdownChanged: (markdown: string) => void;
   onTitleChanged: (title: string) => void;
+  onFileUploaded: (file: File) => void;
   onPreviousPostsToggle: () => void;
   isPreviousPostsButtonOpen: boolean;
   pastPostsButtons: React.ReactNode[];
@@ -171,12 +178,35 @@ type EditLayoutProps = {
   innerHtml: string;
 };
 
+type EditTabProps = {
+  onFileUploaded: (file: File) => void;
+};
+const EditTabWrapper = styled.div`
+  background-color: gray;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+`;
+const EditTab = ({ onFileUploaded }: EditTabProps) => {
+  return (
+    <>
+      <EditTabWrapper>
+        <IconInput
+          icon={FaImage}
+          onFileUploaded={onFileUploaded}
+          fontLevel={5}
+        />
+      </EditTabWrapper>
+    </>
+  );
+};
 type MarkdownAreaProps = {
   bg: string;
   title: string;
   markdown: string;
   onTitleChanged: (title: string) => void;
   onMarkdownChanged: (markdown: string) => void;
+  onFileUploaded: (file: File) => void;
 };
 const MarkdownArea = ({
   bg,
@@ -184,6 +214,7 @@ const MarkdownArea = ({
   markdown,
   onMarkdownChanged,
   onTitleChanged,
+  onFileUploaded,
 }: MarkdownAreaProps) => {
   const font =
     "ui-monospace,SFMono-Regular,SF Mono,Menlo,Consolas,Liberation Mono,monospace" as const;
@@ -193,6 +224,7 @@ const MarkdownArea = ({
   }, []);
   return (
     <>
+      <EditTab onFileUploaded={onFileUploaded} />
       <TitleInput
         bg={bg}
         fontFamily={font}
@@ -286,6 +318,7 @@ const EditLayout = ({
   onMarkdownSelected,
   onRenderedSelected,
   onMarkdownChanged,
+  onFileUploaded,
   onTitleChanged,
   onPreviousPostsToggle,
   isPreviousPostsButtonOpen,
@@ -325,6 +358,7 @@ const EditLayout = ({
           markdown={markdown}
           onMarkdownChanged={onMarkdownChanged}
           onTitleChanged={onTitleChanged}
+          onFileUploaded={onFileUploaded}
         />
       ) : (
         <Preview title={title} bg={bg} innerHtml={innerHtml} />
@@ -543,6 +577,17 @@ const Edit = () => {
         })
       : []),
   ];
+  const { upload, uploading, url, onFinishedApply } =
+    useUploadImageToSupabaseAndGetUrl();
+  useEffect(() => {
+    if (!uploading && url) {
+      setMarkdown(markdown + `![](${url})`);
+      onFinishedApply();
+    }
+  }, [uploading, url]);
+  const markdownWithUploading =
+    markdown + (uploading ? `![](uploading...)` : "");
+  const onFileUploaded = (file: File) => upload(supabase, file);
   const headerHeight = 80;
   const tabHeight = "30px";
   return (
@@ -551,6 +596,7 @@ const Edit = () => {
       <EditLayout
         onMarkdownSelected={onMarkdownSelected}
         onRenderedSelected={onRenderedSelected}
+        onFileUploaded={onFileUploaded}
         onTitleChanged={onTitleChanged}
         onMarkdownChanged={onMarkdownChanged}
         onPreviousPostsToggle={onToggle}
@@ -564,7 +610,7 @@ const Edit = () => {
         selected={kind}
         bg={background}
         title={title}
-        markdown={markdown}
+        markdown={markdownWithUploading}
         innerHtml={html}
       />
       <Footer />

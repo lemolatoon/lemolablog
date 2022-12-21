@@ -21,14 +21,9 @@ export const IconButton = ({
   ...buttonProps
 }: IconButtonProps) => {
   return (
-    <HoverButtonLikeStyledDiv {...buttonProps}>
+    <HoverButtonLikeStyledDiv onClick={onClick} {...buttonProps}>
       <Icon />
-      <TransparentButton
-        {...buttonProps}
-        onClick={onClick}
-        disabled={disabled}
-        type={type}
-      >
+      <TransparentButton {...buttonProps} disabled={disabled} type={type}>
         {children}
       </TransparentButton>
     </HoverButtonLikeStyledDiv>
