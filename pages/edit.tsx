@@ -11,6 +11,8 @@ import { Header } from "../src/Header/Header";
 import { BannerMenu } from "../src/components/BannerMenu";
 import { Button } from "../src/components/Button";
 import { Post } from "../src/types/supabase";
+import { THEME_COLOR1 } from "../styles/colors";
+import { Footer } from "../src/Footer/Footer";
 
 type FontFamilyKind =
   | "Ubuntu Mono"
@@ -314,7 +316,7 @@ const EditLayout = ({
 };
 
 const Edit = () => {
-  const background = "#a3afe3";
+  const background = THEME_COLOR1;
   const [title, setTitle] = useState<string>("");
   const [pastTitles, setPastTitles] = useState<
     Pick<Post, "title" | "post_id">[] | null
@@ -533,6 +535,7 @@ const Edit = () => {
         markdown={markdown}
         innerHtml={html}
       />
+      <Footer />
     </>
   );
 };

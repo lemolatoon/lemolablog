@@ -6,6 +6,8 @@ import { Preview } from "../edit";
 import { Header } from "../../src/Header/Header";
 import React from "react";
 import styled from "styled-components";
+import { THEME_COLOR1 } from "../../styles/colors";
+import { Footer } from "../../src/Footer/Footer";
 
 type PaddingBlockProps = {
   height: string;
@@ -45,7 +47,7 @@ const Post = () => {
     });
   }, [router]);
 
-  const bg = "#a3afe3";
+  const bg = THEME_COLOR1;
 
   return (
     <>
@@ -56,6 +58,7 @@ const Post = () => {
       ) : (
         <p>Loading...</p>
       )}
+      <Footer />
     </>
   );
 };

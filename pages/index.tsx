@@ -5,6 +5,7 @@ import styled from "styled-components";
 import { usePostedTitles } from "../src/hooks/hooks";
 import Link from "next/link";
 import { Button } from "../src/components/Button";
+import { Footer } from "../src/Footer/Footer";
 
 const BlogTitleLi = styled.li`
   display: flex;
@@ -65,6 +66,7 @@ export default function Home() {
       <AppContainer>
         <BlogTitle>{links}</BlogTitle>
       </AppContainer>
+      <Footer />
     </>
   );
 }

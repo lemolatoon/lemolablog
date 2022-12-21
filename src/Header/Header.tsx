@@ -8,12 +8,13 @@ import { IconButton } from "../components/IconButton";
 import Image from "next/image";
 import lemolablogImage from "public/lemolablog.png";
 import Link from "next/link";
+import { THEME_COLOR1, THEME_COLOR3 } from "../../styles/colors";
 
 type HeaderContainerProps = {
   height?: string;
 };
 const HeaderContainer = styled.div<HeaderContainerProps>`
-  background-color: #a3afe3;
+  background-color: ${THEME_COLOR1};
   height: ${(props) => props.height ?? "50px"};
   margin: 0;
   display: flex;
@@ -26,7 +27,7 @@ const HeaderContentContainer = styled.div`
 `;
 
 const OsyareLine = styled.div<{ h: number }>`
-  background-color: #1c285c;
+  background-color: ${THEME_COLOR3};
   height: ${(props) => props.h - 3}px; // substract margin-bottom
   margin-top: 0;
   margin-left: 3px;
