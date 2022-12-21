@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styled, { css } from "styled-components";
-import markdownToHtml from "zenn-markdown-html";
 import { IconButton } from "../src/components/IconButton";
-import { useDebounce, useToggle } from "../src/hooks/hooks";
+import { useHtmlToMarkdown, useToggle } from "../src/hooks/hooks";
 import { FaUpload } from "react-icons/fa";
 import { BiCaretDownSquare } from "react-icons/bi";
 import { useSession, useSupabaseClient } from "@supabase/auth-helpers-react";
@@ -188,6 +187,10 @@ const MarkdownArea = ({
 }: MarkdownAreaProps) => {
   const font =
     "ui-monospace,SFMono-Regular,SF Mono,Menlo,Consolas,Liberation Mono,monospace" as const;
+
+  useEffect(() => {
+    import("zenn-embed-elements");
+  }, []);
   return (
     <>
       <TitleInput
@@ -344,15 +347,11 @@ const Edit = () => {
     Pick<Post, "title" | "post_id" | "is_public">[] | null
   >(null);
   const [markdown, setMarkdown] = useState<string>("");
-  const [html, setHtml] = useState<string>("");
+  const html = useHtmlToMarkdown(markdown);
   const [kind, setKind] = useState<TabKind>("markdown");
   const [postId, setPostId] = useState<number | undefined>(undefined);
   const [loading, setLoading] = useState<boolean>(false);
   const { isOpen, onToggle, onClose } = useToggle();
-  const debounce = useDebounce(1000);
-  useEffect(() => {
-    debounce(() => setHtml(markdownToHtml(markdown)));
-  }, [markdown]);
   const onMarkdownSelected = () => {
     setKind("markdown");
   };
@@ -493,7 +492,6 @@ const Edit = () => {
   ) => {
     setTitle(title);
     setMarkdown(markdown);
-    setHtml(html);
     setPostId(postId);
   };
   const resetBlogComponents = () => setBlogComponents("", "", "", undefined);
