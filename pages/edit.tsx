@@ -149,7 +149,7 @@ const SubmitButton = ({
 
 const JustifyCenterWrapper = styled.div`
   display: flex;
-  justify-content: center;
+  justify-content: space-around;
 `;
 
 type EditLayoutProps = {
@@ -429,7 +429,7 @@ const Edit = () => {
 
     try {
       if (!user) {
-        alert("Login is required for fetch past blogs!");
+        console.error("Login is required for fetch past blogs!");
         setLoading(false);
         return;
       }
