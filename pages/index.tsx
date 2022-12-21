@@ -5,6 +5,7 @@ import styled from "styled-components";
 import { usePostedTitles } from "../src/hooks/hooks";
 import Link from "next/link";
 import { Button } from "../src/components/Button";
+import { Footer } from "../src/Footer/Footer";
 
 const BlogTitleLi = styled.li`
   display: flex;
@@ -22,7 +23,8 @@ const BlogTitleLi = styled.li`
 
 const BlogTitlesContainer = styled.ul`
   top: 0;
-  left: 0;
+  margin-left: auto;
+  margin-right: auto;
   flex-direction: column;
   width: 90%;
   justify-content: center;
@@ -51,7 +53,7 @@ export default function Home() {
     ? titles.map(({ title, post_id }, idx) => {
         return (
           <Link key={idx} href={`posts/${post_id}`}>
-            <Button fontLevel={5} color="white">
+            <Button border="none" fontLevel={5} color="white">
               {title}
             </Button>
           </Link>
@@ -64,6 +66,7 @@ export default function Home() {
       <AppContainer>
         <BlogTitle>{links}</BlogTitle>
       </AppContainer>
+      <Footer />
     </>
   );
 }

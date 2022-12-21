@@ -7,4 +7,5 @@ export type Post = {
   is_public: boolean;
   is_deleted: boolean;
   updated_at: string;
+  published_at: string;
 };

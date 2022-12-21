@@ -11,6 +11,8 @@ import { Header } from "../src/Header/Header";
 import { BannerMenu } from "../src/components/BannerMenu";
 import { Button } from "../src/components/Button";
 import { Post } from "../src/types/supabase";
+import { THEME_COLOR1 } from "../styles/colors";
+import { Footer } from "../src/Footer/Footer";
 
 type FontFamilyKind =
   | "Ubuntu Mono"
@@ -102,22 +104,38 @@ const Tab = ({
 
 type SubmitButtonProps = {
   onSubmit: () => void;
+  onTempSave: () => void;
   disabled: boolean;
 };
-const SubmitButton = ({ onSubmit, disabled }: SubmitButtonProps) => {
+const SubmitButton = ({
+  onSubmit,
+  onTempSave,
+  disabled,
+}: SubmitButtonProps) => {
   const session = useSession();
   return (
     <>
       {session ? (
-        <IconButton
-          onClick={onSubmit}
-          disabled={disabled}
-          icon={FaUpload}
-          fontLevel={4}
-          transparent={true}
-        >
-          投稿
-        </IconButton>
+        <>
+          <IconButton
+            onClick={onTempSave}
+            disabled={disabled}
+            icon={FaUpload}
+            fontLevel={4}
+            transparent={true}
+          >
+            一次保存
+          </IconButton>
+          <IconButton
+            onClick={onSubmit}
+            disabled={disabled}
+            icon={FaUpload}
+            fontLevel={4}
+            transparent={true}
+          >
+            投稿
+          </IconButton>
+        </>
       ) : (
         <div>
           投稿にはまず
@@ -131,7 +149,7 @@ const SubmitButton = ({ onSubmit, disabled }: SubmitButtonProps) => {
 
 const JustifyCenterWrapper = styled.div`
   display: flex;
-  justify-content: center;
+  justify-content: space-around;
 `;
 
 type EditLayoutProps = {
@@ -143,6 +161,7 @@ type EditLayoutProps = {
   isPreviousPostsButtonOpen: boolean;
   pastPostsButtons: React.ReactNode[];
   onSubmit: () => void;
+  onTempSave: () => void;
   disabled: boolean;
   selected: TabKind;
   tabHeight: string;
@@ -269,6 +288,7 @@ const EditLayout = ({
   isPreviousPostsButtonOpen,
   pastPostsButtons,
   onSubmit,
+  onTempSave,
   headerHeight,
   tabHeight,
   disabled,
@@ -307,17 +327,21 @@ const EditLayout = ({
         <Preview title={title} bg={bg} innerHtml={innerHtml} />
       )}
       <JustifyCenterWrapper>
-        <SubmitButton onSubmit={onSubmit} disabled={disabled} />
+        <SubmitButton
+          onSubmit={onSubmit}
+          onTempSave={onTempSave}
+          disabled={disabled}
+        />
       </JustifyCenterWrapper>
     </>
   );
 };
 
 const Edit = () => {
-  const background = "#a3afe3";
+  const background = THEME_COLOR1;
   const [title, setTitle] = useState<string>("");
   const [pastTitles, setPastTitles] = useState<
-    Pick<Post, "title" | "post_id">[] | null
+    Pick<Post, "title" | "post_id" | "is_public">[] | null
   >(null);
   const [markdown, setMarkdown] = useState<string>("");
   const [html, setHtml] = useState<string>("");
@@ -348,7 +372,8 @@ const Edit = () => {
     postId: number | undefined,
     title: string,
     markdown: string,
-    html: string
+    html: string,
+    makePublic: boolean
   ) => {
     try {
       setLoading(true);
@@ -358,16 +383,19 @@ const Edit = () => {
         setLoading(false);
         return;
       }
+      const currentDate = new Date().toISOString();
       const inserts = {
         id: user.id,
         post_id: postId,
         title: title,
         raw_markdown: markdown,
         converted_html: html,
-        is_public: true,
+        is_public: makePublic,
         is_deleted: false,
-        updated_at: new Date().toISOString(),
-      };
+        updated_at: currentDate,
+        // if not updating then insert `created_at`
+        published_at: postId ? undefined : currentDate,
+      } satisfies Partial<Post>;
       let error;
 
       if (postId) {
@@ -388,7 +416,11 @@ const Edit = () => {
     }
   };
   const onSubmit = () => {
-    insertBlog(postId, title, markdown, html);
+    insertBlog(postId, title, markdown, html, true);
+  };
+
+  const onTempSave = () => {
+    insertBlog(postId, title, markdown, html, false);
   };
 
   // fetch blog data
@@ -397,14 +429,14 @@ const Edit = () => {
 
     try {
       if (!user) {
-        alert("Login is required for fetch past blogs!");
+        console.error("Login is required for fetch past blogs!");
         setLoading(false);
         return;
       }
       console.log(user.id);
       const { data, error, status } = await supabase
         .from("blogs")
-        .select(`title, post_id`)
+        .select(`title, post_id, is_public`)
         .eq("id", user.id);
 
       if (error && status !== 406) {
@@ -428,7 +460,7 @@ const Edit = () => {
 
     try {
       if (!user) {
-        alert("Login is required for fetch past blogs!");
+        console.error("Login is required for fetch past blogs!");
         setLoading(false);
         return;
       }
@@ -475,6 +507,7 @@ const Edit = () => {
       key={0}
       transparent={false}
       fontLevel={3}
+      border="none"
       onClick={() => {
         resetBlogComponents();
         onClose();
@@ -484,7 +517,7 @@ const Edit = () => {
       Reset
     </Button>,
     ...(pastTitles
-      ? pastTitles.map(({ title, post_id }, idx) => {
+      ? pastTitles.map(({ title, post_id, is_public }, idx) => {
           const onClick = async () => {
             const blogInfos = await fetchBlogByPostId(post_id);
             if (blogInfos)
@@ -500,11 +533,13 @@ const Edit = () => {
             <Button
               key={idx + 1}
               transparent={false}
+              border="none"
               fontLevel={3}
               onClick={onClick}
               color="white"
             >
               {title}
+              {!is_public ? <NotPublicTag> (非公開)</NotPublicTag> : <></>}
             </Button>
           );
         })
@@ -524,6 +559,7 @@ const Edit = () => {
         isPreviousPostsButtonOpen={isOpen}
         pastPostsButtons={pastPostsButtons}
         onSubmit={onSubmit}
+        onTempSave={onTempSave}
         tabHeight={tabHeight}
         headerHeight={`${headerHeight}px`}
         disabled={loading}
@@ -533,8 +569,14 @@ const Edit = () => {
         markdown={markdown}
         innerHtml={html}
       />
+      <Footer />
     </>
   );
 };
+
+const NotPublicTag = styled.span`
+  color: red;
+  filter: brightness(0.9);
+`;
 
 export default Edit;
