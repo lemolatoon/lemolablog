@@ -4,6 +4,7 @@ import {
 } from "@supabase/auth-helpers-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Post } from "../types/supabase";
+import { v4 as uuidv4 } from "uuid";
 
 type Debounce = (fn: () => void) => void;
 
@@ -153,6 +154,41 @@ export const useHtmlToMarkdown = (markdown: string) => {
       setHtml(html);
     }
   };
-  console.log(html);
   return html;
+};
+
+export const useUploadImageToSupabaseAndGetUrl = () => {
+  const [uploading, setUploading] = useState<boolean>(false);
+  const [url, setUrl] = useState<string | null>(null);
+  const upload = async (supabase: PublicSupabaseClient, file: File) => {
+    setUploading(true);
+    try {
+      const uuid = uuidv4();
+      const filename = `public/${uuid}.png`;
+      const { data, error } = await supabase.storage
+        .from("lemolablog-images")
+        .upload(filename, file);
+      if (error || !data) {
+        console.error(error);
+        return null;
+      }
+      const {
+        data: { publicUrl },
+      } = await supabase.storage
+        .from("lemolablog-images")
+        .getPublicUrl(filename);
+      console.log(publicUrl);
+      setUrl(publicUrl);
+    } catch (error) {
+      console.error(error);
+      setUrl(null);
+    } finally {
+      setUploading(false);
+    }
+  };
+  const onFinishedApply = () => {
+    setUrl(null);
+    setUploading(false);
+  };
+  return { uploading, upload, url, onFinishedApply };
 };
