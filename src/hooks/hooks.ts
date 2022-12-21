@@ -133,3 +133,26 @@ export const usePostedTitles = () => {
   }, [supabase]);
   return { titles: pastTitles };
 };
+
+export const useHtmlToMarkdown = (markdown: string) => {
+  const [html, setHtml] = useState<string>("");
+  const debounce = useDebounce(1000);
+  useEffect(() => {
+    debounce(() => setHtmlFromMarkdown(markdown));
+  }, [markdown]);
+  const setHtmlFromMarkdown = async (markdown: string) => {
+    const options = {
+      body: JSON.stringify({
+        markdown: markdown,
+      }),
+      method: "POST",
+    };
+    const res = await fetch("/api/markdownToHtml", options);
+    if (res.status === 200 && res.body) {
+      const html = ((await res.json()) as { html: string }).html;
+      setHtml(html);
+    }
+  };
+  console.log(html);
+  return html;
+};
