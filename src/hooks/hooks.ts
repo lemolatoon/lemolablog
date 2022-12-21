@@ -48,7 +48,8 @@ export const useFetchBlogTitles =
     try {
       const { data, error, status } = await supabase
         .from("blogs")
-        .select(`title, post_id`);
+        .select(`title, post_id`)
+        .eq("is_public", true);
 
       if (error && status !== 406) {
         throw error;

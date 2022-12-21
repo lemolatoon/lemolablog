@@ -104,22 +104,38 @@ const Tab = ({
 
 type SubmitButtonProps = {
   onSubmit: () => void;
+  onTempSave: () => void;
   disabled: boolean;
 };
-const SubmitButton = ({ onSubmit, disabled }: SubmitButtonProps) => {
+const SubmitButton = ({
+  onSubmit,
+  onTempSave,
+  disabled,
+}: SubmitButtonProps) => {
   const session = useSession();
   return (
     <>
       {session ? (
-        <IconButton
-          onClick={onSubmit}
-          disabled={disabled}
-          icon={FaUpload}
-          fontLevel={4}
-          transparent={true}
-        >
-          投稿
-        </IconButton>
+        <>
+          <IconButton
+            onClick={onTempSave}
+            disabled={disabled}
+            icon={FaUpload}
+            fontLevel={4}
+            transparent={true}
+          >
+            一次保存
+          </IconButton>
+          <IconButton
+            onClick={onSubmit}
+            disabled={disabled}
+            icon={FaUpload}
+            fontLevel={4}
+            transparent={true}
+          >
+            投稿
+          </IconButton>
+        </>
       ) : (
         <div>
           投稿にはまず
@@ -145,6 +161,7 @@ type EditLayoutProps = {
   isPreviousPostsButtonOpen: boolean;
   pastPostsButtons: React.ReactNode[];
   onSubmit: () => void;
+  onTempSave: () => void;
   disabled: boolean;
   selected: TabKind;
   tabHeight: string;
@@ -271,6 +288,7 @@ const EditLayout = ({
   isPreviousPostsButtonOpen,
   pastPostsButtons,
   onSubmit,
+  onTempSave,
   headerHeight,
   tabHeight,
   disabled,
@@ -309,7 +327,11 @@ const EditLayout = ({
         <Preview title={title} bg={bg} innerHtml={innerHtml} />
       )}
       <JustifyCenterWrapper>
-        <SubmitButton onSubmit={onSubmit} disabled={disabled} />
+        <SubmitButton
+          onSubmit={onSubmit}
+          onTempSave={onTempSave}
+          disabled={disabled}
+        />
       </JustifyCenterWrapper>
     </>
   );
@@ -350,7 +372,8 @@ const Edit = () => {
     postId: number | undefined,
     title: string,
     markdown: string,
-    html: string
+    html: string,
+    makePublic: boolean
   ) => {
     try {
       setLoading(true);
@@ -360,16 +383,19 @@ const Edit = () => {
         setLoading(false);
         return;
       }
+      const currentDate = new Date().toISOString();
       const inserts = {
         id: user.id,
         post_id: postId,
         title: title,
         raw_markdown: markdown,
         converted_html: html,
-        is_public: true,
+        is_public: makePublic,
         is_deleted: false,
-        updated_at: new Date().toISOString(),
-      };
+        updated_at: currentDate,
+        // if not updating then insert `created_at`
+        published_at: postId ? undefined : currentDate,
+      } satisfies Partial<Post>;
       let error;
 
       if (postId) {
@@ -390,7 +416,11 @@ const Edit = () => {
     }
   };
   const onSubmit = () => {
-    insertBlog(postId, title, markdown, html);
+    insertBlog(postId, title, markdown, html, true);
+  };
+
+  const onTempSave = () => {
+    insertBlog(postId, title, markdown, html, false);
   };
 
   // fetch blog data
@@ -430,7 +460,7 @@ const Edit = () => {
 
     try {
       if (!user) {
-        alert("Login is required for fetch past blogs!");
+        console.error("Login is required for fetch past blogs!");
         setLoading(false);
         return;
       }
@@ -526,6 +556,7 @@ const Edit = () => {
         isPreviousPostsButtonOpen={isOpen}
         pastPostsButtons={pastPostsButtons}
         onSubmit={onSubmit}
+        onTempSave={onTempSave}
         tabHeight={tabHeight}
         headerHeight={`${headerHeight}px`}
         disabled={loading}

@@ -19,6 +19,9 @@ alter table blogs
 create policy "blogs are viewwable by everyone if it's public." on blogs
   for select using (is_public and not is_deleted);
 
+create policy "Users can view their own blogs if it's not deleted, even if it's not public." on blogs
+  for select using (auth.uid() = id and not is_deleted);
+
 create policy "Users can insert their own profile." on blogs
   for insert with check (auth.uid() = id);
 
