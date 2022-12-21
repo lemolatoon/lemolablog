@@ -341,7 +341,7 @@ const Edit = () => {
   const background = THEME_COLOR1;
   const [title, setTitle] = useState<string>("");
   const [pastTitles, setPastTitles] = useState<
-    Pick<Post, "title" | "post_id">[] | null
+    Pick<Post, "title" | "post_id" | "is_public">[] | null
   >(null);
   const [markdown, setMarkdown] = useState<string>("");
   const [html, setHtml] = useState<string>("");
@@ -436,7 +436,7 @@ const Edit = () => {
       console.log(user.id);
       const { data, error, status } = await supabase
         .from("blogs")
-        .select(`title, post_id`)
+        .select(`title, post_id, is_public`)
         .eq("id", user.id);
 
       if (error && status !== 406) {
@@ -507,6 +507,7 @@ const Edit = () => {
       key={0}
       transparent={false}
       fontLevel={3}
+      border="none"
       onClick={() => {
         resetBlogComponents();
         onClose();
@@ -516,7 +517,7 @@ const Edit = () => {
       Reset
     </Button>,
     ...(pastTitles
-      ? pastTitles.map(({ title, post_id }, idx) => {
+      ? pastTitles.map(({ title, post_id, is_public }, idx) => {
           const onClick = async () => {
             const blogInfos = await fetchBlogByPostId(post_id);
             if (blogInfos)
@@ -532,11 +533,13 @@ const Edit = () => {
             <Button
               key={idx + 1}
               transparent={false}
+              border="none"
               fontLevel={3}
               onClick={onClick}
               color="white"
             >
               {title}
+              {!is_public ? <NotPublicTag> (非公開)</NotPublicTag> : <></>}
             </Button>
           );
         })
@@ -570,5 +573,10 @@ const Edit = () => {
     </>
   );
 };
+
+const NotPublicTag = styled.span`
+  color: red;
+  filter: brightness(0.9);
+`;
 
 export default Edit;

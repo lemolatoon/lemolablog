@@ -13,7 +13,11 @@ export type TransparentButtonProps = {
   fontLevel: FontLevel;
 };
 
-export type ButtonProps = TransparentButtonProps & HoverButtonProps;
+type BorderProps = "none" | "solid";
+export type ButtonProps = {
+  border?: BorderProps;
+} & TransparentButtonProps &
+  HoverButtonProps;
 
 export const Hover = (props: HoverButtonProps) => css`
   color: ${props.color};
@@ -32,7 +36,7 @@ export const Hover = (props: HoverButtonProps) => css`
 
 const Transparent = (props: TransparentButtonProps) => css`
   color: ${props.color};
-  border: ${props.transparent ? "none" : "solid"};
+  border: ${props.transparent ? "none" : undefined};
   background-color: ${props.bg ?? "inherit"};
   font-size: ${fontLevel2FontSize(props.fontLevel)};
   text-decoration: inherit;
@@ -48,6 +52,7 @@ export const HoverButton = styled.button<HoverButtonProps>`
 `;
 
 export const Button = styled.button<ButtonProps>`
+  border: ${(props) => props.border};
   ${(props) => Hover(props)}
   ${(props) => Transparent(props)}
 `;

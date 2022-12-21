@@ -53,7 +53,7 @@ export default function Home() {
     ? titles.map(({ title, post_id }, idx) => {
         return (
           <Link key={idx} href={`posts/${post_id}`}>
-            <Button fontLevel={5} color="white">
+            <Button border="none" fontLevel={5} color="white">
               {title}
             </Button>
           </Link>
