@@ -22,7 +22,8 @@ const BlogTitleLi = styled.li`
 
 const BlogTitlesContainer = styled.ul`
   top: 0;
-  left: 0;
+  margin-left: auto;
+  margin-right: auto;
   flex-direction: column;
   width: 90%;
   justify-content: center;
