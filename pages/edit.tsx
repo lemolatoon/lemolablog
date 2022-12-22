@@ -222,6 +222,13 @@ const MarkdownArea = ({
   useEffect(() => {
     import("zenn-embed-elements");
   }, []);
+  const onPasted = (e: React.ClipboardEvent<HTMLTextAreaElement>) => {
+    const file = e.clipboardData.files.item(0);
+    if (!file) {
+      return;
+    }
+    onFileUploaded(file);
+  };
   return (
     <>
       <EditTab onFileUploaded={onFileUploaded} />
@@ -236,6 +243,7 @@ const MarkdownArea = ({
         bg={bg}
         value={markdown}
         onChange={(e) => onMarkdownChanged(e.target.value)}
+        onPaste={onPasted}
       />
     </>
   );
