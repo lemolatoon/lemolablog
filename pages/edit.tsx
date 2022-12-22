@@ -196,6 +196,7 @@ const EditTab = ({ onFileUploaded }: EditTabProps) => {
           icon={FaImage}
           onFileUploaded={onFileUploaded}
           fontLevel={5}
+          accept="image/png, image/jpeg, image/jpg"
         />
       </EditTabWrapper>
     </>
@@ -230,7 +231,7 @@ const MarkdownArea = ({
   }, []);
   const onPasted = (e: React.ClipboardEvent<HTMLTextAreaElement>) => {
     const file = e.clipboardData.files.item(0);
-    if (!file) {
+    if (!file || !file.type.startsWith("image/")) {
       return;
     }
     onFileUploaded(file);
