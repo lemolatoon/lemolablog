@@ -14,7 +14,7 @@ import { Header } from "../src/Header/Header";
 import { BannerMenu } from "../src/components/BannerMenu";
 import { Button } from "../src/components/Button";
 import { Post } from "../src/types/supabase";
-import { THEME_COLOR1 } from "../styles/colors";
+import { THEME_COLOR4 } from "../styles/colors";
 import { Footer } from "../src/Footer/Footer";
 import { IconInput } from "../src/components/IconInput";
 
@@ -274,6 +274,7 @@ type TitleDivProps = {
   bg: string;
 };
 const BlogDiv = styled(TitleDiv)`
+  padding: 1em;
   min-height: 80vh;
 `;
 
@@ -396,7 +397,7 @@ const EditLayout = ({
 };
 
 const Edit = () => {
-  const background = THEME_COLOR1;
+  const background = THEME_COLOR4;
   const [title, setTitle] = useState<string>("");
   const [pastTitles, setPastTitles] = useState<
     Pick<Post, "title" | "post_id" | "is_public">[] | null
