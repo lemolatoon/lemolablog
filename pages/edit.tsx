@@ -14,7 +14,7 @@ import { Header } from "../src/Header/Header";
 import { BannerMenu } from "../src/components/BannerMenu";
 import { Button } from "../src/components/Button";
 import { Post } from "../src/types/supabase";
-import { THEME_COLOR1 } from "../styles/colors";
+import { THEME_COLOR4 } from "../styles/colors";
 import { Footer } from "../src/Footer/Footer";
 import { IconInput } from "../src/components/IconInput";
 
@@ -27,13 +27,11 @@ type WideTextAreaProps = {
 };
 
 const WideTextArea = styled.textarea<WideTextAreaProps>`
+  margin-top: 0;
   padding: 1em;
-  margin-left: 3em;
-  margin-right: 3em;
-  width: 90%;
   min-height: 80vh;
+  width: 90%;
   font-family: ${(props) => props.fontFamily};
-  border-radius: 4;
   background-color: ${(props) => props.bg};
   border-radius: 10px;
 `;
@@ -46,12 +44,13 @@ const TitleInput = styled(WideTextArea.withComponent("input"))`
 type BoxWithTextProps = {
   selected: boolean;
   height: string;
+  width: string;
 };
 const BoxWithText = styled.div<BoxWithTextProps>`
   padding: 0;
   margin: 0;
   height: ${(props) => props.height};
-  width: 200px;
+  width: ${(props) => props.width};
   background-color: #808080;
   ${(props) =>
     props.selected
@@ -91,6 +90,7 @@ const Tab = ({
         }}
         selected={selected === "markdown"}
         height={height}
+        width="40vw"
       >
         MarkDown
       </BoxWithText>
@@ -100,6 +100,7 @@ const Tab = ({
         }}
         selected={selected === "rendered"}
         height={height}
+        width="40vw"
       >
         Preview
       </BoxWithText>
@@ -208,6 +209,11 @@ type MarkdownAreaProps = {
   onMarkdownChanged: (markdown: string) => void;
   onFileUploaded: (file: File) => void;
 };
+const MarkdownAreaBox = styled.div`
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+`;
 const MarkdownArea = ({
   bg,
   title,
@@ -230,7 +236,7 @@ const MarkdownArea = ({
     onFileUploaded(file);
   };
   return (
-    <>
+    <MarkdownAreaBox>
       <EditTab onFileUploaded={onFileUploaded} />
       <TitleInput
         bg={bg}
@@ -245,15 +251,13 @@ const MarkdownArea = ({
         onChange={(e) => onMarkdownChanged(e.target.value)}
         onPaste={onPasted}
       />
-    </>
+    </MarkdownAreaBox>
   );
 };
 
 const TitleDiv = styled.div<TitleDivProps>`
   background-color: ${(props) => props.bg};
   margin-top: 0;
-  margin-left: 3em;
-  margin-right: 3em;
   padding-left: 1em;
   padding-right: 1em;
   margin-bottom: 1em;
@@ -270,6 +274,7 @@ type TitleDivProps = {
   bg: string;
 };
 const BlogDiv = styled(TitleDiv)`
+  padding: 1em;
   min-height: 80vh;
 `;
 
@@ -278,9 +283,15 @@ type PreviewProps = {
   innerHtml: string;
   bg: string;
 };
+const PreviewBox = styled.div`
+  > * {
+    margin-left: auto;
+    margin-right: auto;
+  }
+`;
 export const Preview = ({ title, bg, innerHtml }: PreviewProps) => {
   return (
-    <>
+    <PreviewBox>
       <TitleDiv bg={bg}>
         <h1>{title}</h1>
       </TitleDiv>
@@ -289,7 +300,7 @@ export const Preview = ({ title, bg, innerHtml }: PreviewProps) => {
         bg={bg}
         dangerouslySetInnerHTML={{ __html: innerHtml }}
       />
-    </>
+    </PreviewBox>
   );
 };
 
@@ -308,9 +319,12 @@ const PreviousPostsMenu = ({
   return (
     <>
       <AlignEndWrapper>
-        <IconButton icon={BiCaretDownSquare} fontLevel={2} onClick={onClick}>
-          これまでの記事
-        </IconButton>
+        <IconButton
+          icon={BiCaretDownSquare}
+          iconFontLevel={6}
+          onClick={onClick}
+          fontLevel={1} /* dummy */
+        />
       </AlignEndWrapper>
       <BannerMenu headerHeight={headerHeight} isOpen={isOpen}>
         {children}
@@ -383,7 +397,7 @@ const EditLayout = ({
 };
 
 const Edit = () => {
-  const background = THEME_COLOR1;
+  const background = THEME_COLOR4;
   const [title, setTitle] = useState<string>("");
   const [pastTitles, setPastTitles] = useState<
     Pick<Post, "title" | "post_id" | "is_public">[] | null

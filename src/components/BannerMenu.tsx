@@ -8,7 +8,6 @@ const ChildrenWrapper = styled.li<ChildrenWrapperProps>`
   display: flex;
   justify-content: center;
   margin: 0;
-  padding: 0.5em 0;
   width: 100%;
   color: white;
   background-color: #222;
@@ -17,7 +16,6 @@ const ChildrenWrapper = styled.li<ChildrenWrapperProps>`
       ? css`
           border: 1px solid #333;
           height: 2.5em;
-          padding: 0.5em;
           transition: height 400ms cubic-bezier(0.23, 1, 0.32, 1);
         `
       : css`

@@ -12,7 +12,6 @@ const BlogTitleLi = styled.li`
   justify-content: center;
   margin: 0;
   padding: 0.5em 0;
-  width: 100%;
   color: white;
   background-color: #222;
   border: 1px solid #333;
@@ -26,7 +25,6 @@ const BlogTitlesContainer = styled.ul`
   margin-left: auto;
   margin-right: auto;
   flex-direction: column;
-  width: 90%;
   justify-content: center;
   align-items: center;
   > ${BlogTitleLi}:not(:last-child) {
