@@ -27,13 +27,11 @@ type WideTextAreaProps = {
 };
 
 const WideTextArea = styled.textarea<WideTextAreaProps>`
+  margin-top: 0;
   padding: 1em;
-  margin-left: 3em;
-  margin-right: 3em;
-  width: 90%;
   min-height: 80vh;
+  width: 90%;
   font-family: ${(props) => props.fontFamily};
-  border-radius: 4;
   background-color: ${(props) => props.bg};
   border-radius: 10px;
 `;
@@ -46,12 +44,13 @@ const TitleInput = styled(WideTextArea.withComponent("input"))`
 type BoxWithTextProps = {
   selected: boolean;
   height: string;
+  width: string;
 };
 const BoxWithText = styled.div<BoxWithTextProps>`
   padding: 0;
   margin: 0;
   height: ${(props) => props.height};
-  width: 200px;
+  width: ${(props) => props.width};
   background-color: #808080;
   ${(props) =>
     props.selected
@@ -91,6 +90,7 @@ const Tab = ({
         }}
         selected={selected === "markdown"}
         height={height}
+        width="40vw"
       >
         MarkDown
       </BoxWithText>
@@ -100,6 +100,7 @@ const Tab = ({
         }}
         selected={selected === "rendered"}
         height={height}
+        width="40vw"
       >
         Preview
       </BoxWithText>
@@ -208,6 +209,11 @@ type MarkdownAreaProps = {
   onMarkdownChanged: (markdown: string) => void;
   onFileUploaded: (file: File) => void;
 };
+const MarkdownAreaBox = styled.div`
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+`;
 const MarkdownArea = ({
   bg,
   title,
@@ -230,7 +236,7 @@ const MarkdownArea = ({
     onFileUploaded(file);
   };
   return (
-    <>
+    <MarkdownAreaBox>
       <EditTab onFileUploaded={onFileUploaded} />
       <TitleInput
         bg={bg}
@@ -245,7 +251,7 @@ const MarkdownArea = ({
         onChange={(e) => onMarkdownChanged(e.target.value)}
         onPaste={onPasted}
       />
-    </>
+    </MarkdownAreaBox>
   );
 };
 
@@ -312,9 +318,12 @@ const PreviousPostsMenu = ({
   return (
     <>
       <AlignEndWrapper>
-        <IconButton icon={BiCaretDownSquare} fontLevel={2} onClick={onClick}>
-          これまでの記事
-        </IconButton>
+        <IconButton
+          icon={BiCaretDownSquare}
+          iconFontLevel={6}
+          onClick={onClick}
+          fontLevel={1} /* dummy */
+        />
       </AlignEndWrapper>
       <BannerMenu headerHeight={headerHeight} isOpen={isOpen}>
         {children}
