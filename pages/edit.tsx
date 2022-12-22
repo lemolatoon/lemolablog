@@ -252,8 +252,6 @@ const MarkdownArea = ({
 const TitleDiv = styled.div<TitleDivProps>`
   background-color: ${(props) => props.bg};
   margin-top: 0;
-  margin-left: 3em;
-  margin-right: 3em;
   padding-left: 1em;
   padding-right: 1em;
   margin-bottom: 1em;
@@ -278,9 +276,15 @@ type PreviewProps = {
   innerHtml: string;
   bg: string;
 };
+const PreviewBox = styled.div`
+  > * {
+    margin-left: auto;
+    margin-right: auto;
+  }
+`;
 export const Preview = ({ title, bg, innerHtml }: PreviewProps) => {
   return (
-    <>
+    <PreviewBox>
       <TitleDiv bg={bg}>
         <h1>{title}</h1>
       </TitleDiv>
@@ -289,7 +293,7 @@ export const Preview = ({ title, bg, innerHtml }: PreviewProps) => {
         bg={bg}
         dangerouslySetInnerHTML={{ __html: innerHtml }}
       />
-    </>
+    </PreviewBox>
   );
 };
 
