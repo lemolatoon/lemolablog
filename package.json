@@ -16,7 +16,8 @@
     "lint:fmt:fix": "yarn lint:fmt --write",
     "lint:ci:fmt": "yarn lint:fmt --check",
     "lint:ci": "yarn lint:ci:eslint && yarn lint:ci:fmt",
-    "lint:fix": "yarn lint:eslint:fix && yarn lint:fmt:fix"
+    "lint:fix": "yarn lint:eslint:fix && yarn lint:fmt:fix",
+    "check": "yarn lint:fmt:fix && yarn lint:ci && yarn run build"
   },
   "dependencies": {
     "@supabase/auth-helpers-nextjs": "^0.5.2",

@@ -25,8 +25,8 @@ export const HeadsForPost = ({ title }: MetaProps) => {
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:site" content="@lemolatoon1" />
       <meta name="twitter:domain" content="https://lemolablog.vercel.app" />
-      <meta name="twitter:image" content={imageUrl}></meta>
-      <meta name="twitter:title" content="@lemolatoon1 のblog"></meta>
+      <meta name="twitter:image" content={imageUrl} />
+      <meta name="twitter:title" content={title} />
     </Head>
   );
 };
