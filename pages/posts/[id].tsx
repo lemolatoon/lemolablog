@@ -8,7 +8,7 @@ import React from "react";
 import styled from "styled-components";
 import { THEME_COLOR4 } from "../../styles/colors";
 import { Footer } from "../../src/Footer/Footer";
-import { Head } from "next/document";
+import Head from "next/head";
 import { Meta } from "../../src/components/Meta";
 
 type PaddingBlockProps = {
