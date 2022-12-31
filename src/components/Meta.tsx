@@ -1,18 +1,16 @@
 import React from "react";
 
-export const Meta = () => {
-  const origin =
-    typeof window !== "undefined" && window.location.origin
-      ? window.location.origin
-      : "";
-  const title = "test title";
+type MetaProps = {
+  title: string;
+};
+export const Meta = ({ title }: MetaProps) => {
   return (
     <>
       <title>{title}</title>
       <meta
         key="og:image"
         property="og:image"
-        content={`${origin}/api/og?title=${title}`}
+        content={`https://lemolablog.vercel.app/api/og?title=${title}`}
       />
     </>
   );

@@ -54,7 +54,7 @@ const Post = () => {
   return (
     <>
       <Head>
-        <Meta />
+        <Meta title={title ?? "No Title"} />
       </Head>
       <Header />
       <PaddingBlock height="50px" />
