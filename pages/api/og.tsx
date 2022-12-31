@@ -1,3 +1,4 @@
+import React from "react";
 import { ImageResponse } from "@vercel/og";
 import { NextApiRequest } from "next";
 import styled from "styled-components";
@@ -27,7 +28,8 @@ const AbsoluteImage = styled(Image)`
   z-index: 1;
 `;
 
-export default function handler(req: NextApiRequest) {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export default function handler(_req: NextApiRequest) {
   return new ImageResponse(
     (
       <div>

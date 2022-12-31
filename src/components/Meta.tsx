@@ -1,3 +1,5 @@
+import React from "react";
+
 export const Meta = () => {
   const origin =
     typeof window !== "undefined" && window.location.origin
