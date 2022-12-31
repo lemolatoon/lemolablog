@@ -16,7 +16,7 @@ const contentWrapper = {
   height: "90%",
   "border-radius": "10px",
   "background-color": THEME_COLOR4,
-  "font-size": "128px",
+  "font-size": "60px",
 } as const;
 
 const WrapperStyle = {
@@ -31,8 +31,10 @@ const WrapperStyle = {
 const ImageWrapper = {
   display: "flex",
   position: "absolute",
-  left: "10%",
-  bottom: "10%",
+  marginTop: "auto",
+  marginRight: "auto",
+  left: "0",
+  bottom: "0",
 } as const;
 
 export default function handler(req: NextRequest) {
@@ -54,10 +56,14 @@ export default function handler(req: NextRequest) {
                 height={150}
               />
             </div>
-            Title HERE
+            {title}
           </div>
         </div>
-      )
+      ),
+      {
+        width: 1200,
+        height: 600,
+      }
     );
   } catch (e) {
     if (e instanceof Error) {
