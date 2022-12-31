@@ -17,6 +17,8 @@ import { Post } from "../src/types/supabase";
 import { THEME_COLOR4 } from "../styles/colors";
 import { Footer } from "../src/Footer/Footer";
 import { IconInput } from "../src/components/IconInput";
+import Head from "next/head";
+import { Meta } from "../src/components/Meta";
 
 type FontFamilyKind =
   | "Ubuntu Mono"
@@ -615,6 +617,9 @@ const Edit = () => {
   const tabHeight = "30px";
   return (
     <>
+      <Head>
+        <Meta />
+      </Head>
       <Header height={headerHeight} />
       <EditLayout
         onMarkdownSelected={onMarkdownSelected}
