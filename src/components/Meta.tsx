@@ -6,12 +6,12 @@ type MetaProps = {
 };
 export const HeadsForPost = ({ title }: MetaProps) => {
   return (
-      <Head>
+    <Head>
       <title>{title}</title>
       <meta
         property="og:image"
         content={`https://lemolablog.vercel.app/api/og?title=${title}`}
       />
-      </Head>
+    </Head>
   );
 };
