@@ -118,6 +118,28 @@ export const useFetchHtmlByPostId =
     return null;
   };
 
+export const useFetchTitleByPostId =
+  () => async (supabase: PublicSupabaseClient, post_id: number) => {
+    try {
+      const { data, error, status } = await supabase
+        .from("blogs")
+        .select(`title`)
+        .eq("post_id", post_id)
+        .single();
+
+      if (error && status !== 406) {
+        throw error;
+      }
+
+      if (data) {
+        return data as Pick<Post, "title">;
+      }
+    } catch (err) {
+      console.error(err);
+    }
+    return null;
+  };
+
 export const usePostedTitles = () => {
   const supabase = useSupabaseClient();
   const fetchBlogTitles = useFetchBlogTitles();
