@@ -4,7 +4,7 @@ import { THEME_COLOR4, THEME_COLOR5 } from "../../styles/colors";
 import { NextRequest } from "next/server";
 
 export const config = {
-  runtime: "edge",
+  runtime: "experimental-edge",
 };
 
 const contentWrapper = {
