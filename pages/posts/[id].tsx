@@ -8,6 +8,8 @@ import React from "react";
 import styled from "styled-components";
 import { THEME_COLOR4 } from "../../styles/colors";
 import { Footer } from "../../src/Footer/Footer";
+import Head from "next/head";
+import { Meta } from "../../src/components/Meta";
 
 type PaddingBlockProps = {
   height: string;
@@ -51,6 +53,9 @@ const Post = () => {
 
   return (
     <>
+      <Head>
+        <Meta title={title ?? "No Title"} />
+      </Head>
       <Header />
       <PaddingBlock height="50px" />
       {title && html ? (
