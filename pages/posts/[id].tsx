@@ -4,10 +4,7 @@ import {
   useFetchHtmlByPostId,
   useFetchTitleByPostId,
 } from "../../src/hooks/hooks";
-import {
-  SupabaseClient,
-  useSupabaseClient,
-} from "@supabase/auth-helpers-react";
+import { useSupabaseClient } from "@supabase/auth-helpers-react";
 import { Preview } from "../edit";
 import { Header } from "../../src/Header/Header";
 import React from "react";
@@ -16,6 +13,7 @@ import { THEME_COLOR4 } from "../../styles/colors";
 import { Footer } from "../../src/Footer/Footer";
 import { HeadsForPost } from "../../src/components/Meta";
 import { GetServerSideProps } from "next";
+import { createClient } from "@supabase/supabase-js";
 
 type PaddingBlockProps = {
   height: string;
@@ -81,18 +79,26 @@ export const config = {
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const errProps = (): PostProps => {
+    console.error("Returning null props");
     return { atServerFetchedTitle: null };
   };
   try {
-    const SUPABASE_URL = process.env.SUPABASE_URL;
-    const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY;
+    const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
     const { id } = ctx.query;
-    if (!(SUPABASE_URL && SUPABASE_ANON_KEY && typeof id === "string")) {
+    if (!(SUPABASE_URL && SUPABASE_ANON_KEY)) {
+      console.error("ENV VARS not found");
       return {
         props: errProps(),
       };
     }
-    const supabase = new SupabaseClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    if (typeof id !== "string") {
+      console.error("id is not typeof string.");
+      return {
+        props: errProps(),
+      };
+    }
+    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     const fetchTitleByPostId = useFetchTitleByPostId();
     const title = (
       await fetchTitleByPostId(supabase, Number.parseInt(id as string, 10))
