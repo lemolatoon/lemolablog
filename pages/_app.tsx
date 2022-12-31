@@ -4,7 +4,6 @@ import { createBrowserSupabaseClient } from "@supabase/auth-helpers-nextjs";
 import { SessionContextProvider, Session } from "@supabase/auth-helpers-react";
 import "../styles/global.css";
 import "zenn-content-css";
-import Head from "next/head";
 
 export default function App({
   Component,
@@ -20,9 +19,6 @@ export default function App({
   }, []);
   return (
     <>
-      <Head>
-        <script src="https://embed.zenn.studio/js/listen-embed-event.js"></script>
-      </Head>
       <SessionContextProvider
         supabaseClient={supabase}
         initialSession={pageProps.initialSession}
