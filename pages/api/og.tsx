@@ -1,45 +1,68 @@
 import React from "react";
 import { ImageResponse } from "@vercel/og";
-import { NextApiRequest } from "next";
-import styled from "styled-components";
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import lemolablogImage from "public/lemolablog.png";
-import Image from "next/image";
+import { THEME_COLOR4, THEME_COLOR5 } from "../../styles/colors";
+import { NextRequest } from "next/server";
 
 export const config = {
   runtime: "experimental-edge",
 };
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const AbsoluteTitle = styled.div`
-  position: absolute;
-  max-width: 90%;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  margin: auto;
-  z-index: 999;
-`;
+const contentWrapper = {
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "center",
+  alignItems: "center",
+  width: "90%",
+  height: "90%",
+  "border-radius": "10px",
+  "background-color": THEME_COLOR4,
+  "font-size": "128px",
+} as const;
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const AbsoluteImage = styled(Image)`
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  margin: auto;
-  z-index: 1;
-`;
+const WrapperStyle = {
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  width: "100%",
+  height: "100%",
+  "background-color": THEME_COLOR5,
+};
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export default function handler(_req: NextApiRequest) {
-  return new ImageResponse(
-    (
-      <h1>
-        {/* <AbsoluteTitle>Test Title</AbsoluteTitle>
-        <AbsoluteImage src={lemolablogImage} alt="lemolablog" height={80} /> */}
-        HELLO WORLD
-      </h1>
-    )
-  );
+const ImageWrapper = {
+  display: "flex",
+  position: "absolute",
+  left: "10%",
+  bottom: "10%",
+} as const;
+
+export default function handler(req: NextRequest) {
+  const errRes = () =>
+    new Response("Failed to generate the image", { status: 500 });
+  try {
+    const { searchParams } = new URL(req.url);
+    const title = searchParams.get("title");
+    if (!title) {
+      return errRes();
+    }
+    return new ImageResponse(
+      (
+        <div style={WrapperStyle}>
+          <div style={contentWrapper}>
+            <div style={ImageWrapper}>
+              <img
+                src="https://udhwwfieuzvojpiubbie.supabase.co/storage/v1/object/public/lemolablog-images/lemolablog.png"
+                height={150}
+              />
+            </div>
+            Title HERE
+          </div>
+        </div>
+      )
+    );
+  } catch (e) {
+    if (e instanceof Error) {
+      console.error(e.message);
+    }
+    return errRes();
+  }
 }
