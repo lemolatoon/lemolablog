@@ -8,7 +8,6 @@ export const Meta = ({ title }: MetaProps) => {
     <>
       <title>{title}</title>
       <meta
-        key="og:image"
         property="og:image"
         content={`https://lemolablog.vercel.app/api/og?title=${title}`}
       />
