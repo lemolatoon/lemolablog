@@ -47,7 +47,9 @@ export default async function handler(
       return res.status(401).json({ message: "Invalid token" });
     }
 
+    console.log(req.body);
     const post_id = validateRequestAndExtractPostId(req.body as unknown);
+    console.log(post_id);
     if (!post_id) {
       return res.status(400).json({ message: "body validation failed." });
     }
