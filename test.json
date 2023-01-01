@@ -1,0 +1,27 @@
+{
+  "type": "UPDATE",
+  "table": "blogs",
+  "record": {
+    "id": "d39179c7-b8fe-4fd6-82c7-0d04abacff96",
+    "title": "test12345",
+    "post_id": 9,
+    "is_public": true,
+    "is_deleted": false,
+    "updated_at": "2023-01-01T16:48:08.219+00:00",
+    "published_at": "2023-01-01T15:49:22.612+00:00",
+    "raw_markdown": "ab",
+    "converted_html": "<p>ab</p>\n"
+  },
+  "schema": "public",
+  "old_record": {
+    "id": "d39179c7-b8fe-4fd6-82c7-0d04abacff96",
+    "title": "test1234",
+    "post_id": 9,
+    "is_public": true,
+    "is_deleted": false,
+    "updated_at": "2023-01-01T16:26:17.45+00:00",
+    "published_at": "2023-01-01T15:49:22.612+00:00",
+    "raw_markdown": "ab",
+    "converted_html": "<p>ab</p>\n"
+  }
+}
