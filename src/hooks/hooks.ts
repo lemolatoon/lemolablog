@@ -96,7 +96,7 @@ export const useFetchBlogByPostId = () => async (post_id: number) => {
   return { data: null, loading };
 };
 
-export const useFetchHtmlByPostId =
+export const useFetchTitleAndHtmlByPostId =
   () => async (supabase: PublicSupabaseClient, post_id: number) => {
     try {
       const { data, error, status } = await supabase

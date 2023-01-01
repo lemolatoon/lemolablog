@@ -10,8 +10,12 @@ export type Post = {
   published_at: string;
 };
 
-// eslint-disable-next-line
-type TableRecord<T> = any;
+type TableRecord<T> = T;
+
+export type DatabaseWebhookPayload<T> =
+  | InsertPayload<T>
+  | UpdatePayload<T>
+  | DeletePayload<T>;
 
 export type InsertPayload<T> = {
   type: "INSERT";
