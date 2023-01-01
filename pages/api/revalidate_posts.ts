@@ -6,17 +6,21 @@ const validateRequestAndExtractPostId = (
 ): Exclude<DatabaseWebhookPayload<Post>["record"], null>["post_id"] | null => {
   try {
     if (typeof _body !== "string") {
+      console.error("body is not string");
       return null;
     }
     const body = JSON.parse(_body);
     if (!body || typeof body !== "object") {
+      console.error("parsed body was not object.");
       return null;
     }
     if (!("record" in body)) {
+      console.error("body has no record.");
       return null;
     }
     const record = body.record;
     if (!record || typeof record !== "object" || !("post_id" in record)) {
+      console.error("record is not object or post_id doesnt exsist");
       return null;
     }
     const post_id = record.post_id;
