@@ -6,16 +6,10 @@ export default async function handler(
   res: NextApiResponse
 ) {
   try {
-    console.log("HERE IS BODY.");
+    console.log("HERE IS TEXT.");
     console.log(req);
-    console.log(req.body);
-    console.log("HERE IS RECORD.");
-    console.log(req.body.record);
-    console.log(JSON.parse(req.body.record));
-    console.log("END HERE IS RECORD.");
-    const body = JSON.parse(req.body);
-    console.log(body);
-    console.log(body);
+    console.log(typeof req.body);
+    console.log(Object.entries(req.body));
     // Check for secret to confirm this is a valid request
     const { secret } = req.query;
     if (!secret || req.query.secret !== process.env.REVALIDATE_SECRET_TOKEN) {
