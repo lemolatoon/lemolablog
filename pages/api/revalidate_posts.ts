@@ -6,11 +6,17 @@ export default async function handler(
   res: NextApiResponse
 ) {
   console.log("HERE IS BODY.");
+  console.log(req);
   console.log(req.body);
+  console.log(JSON.stringify(req.body));
   // Check for secret to confirm this is a valid request
   const { secret } = req.query;
   if (!secret || req.query.secret !== process.env.REVALIDATE_SECRET_TOKEN) {
     console.error("Invalid token.");
+    console.error("got:");
+    console.error(secret);
+    console.error("expected:");
+    console.error(process.env.REVALIDATE_SECRET_TOKEN);
     return res.status(401).json({ message: "Invalid token" });
   }
 
