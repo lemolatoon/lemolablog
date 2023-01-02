@@ -17,6 +17,8 @@ const contentWrapper = {
   "border-radius": "10px",
   "background-color": THEME_COLOR4,
   "font-size": "60px",
+  padding: "1em",
+  "text-align": "center",
 } as const;
 
 const WrapperStyle = {
