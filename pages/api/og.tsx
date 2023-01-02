@@ -16,6 +16,7 @@ const contentWrapper = {
   height: "90%",
   "border-radius": "10px",
   "background-color": THEME_COLOR4,
+  fontFamily: '"NotoSansJP-Bold"',
   "font-size": "60px",
   padding: "1em",
   "text-align": "center",
@@ -39,7 +40,16 @@ const ImageWrapper = {
   bottom: "0",
 } as const;
 
-export default function handler(req: NextRequest) {
+const origin =
+  process.env.NEXT_ENV === "development"
+    ? "http://localhost:3000"
+    : "https://lemolablog.vercel.app";
+const font = fetch(`${origin}/NotoSansJP/NotoSansJP-Bold.otf`).then((res) =>
+  res.arrayBuffer()
+);
+
+export default async function handler(req: NextRequest) {
+  const fontData = await font;
   const errRes = () =>
     new Response("Failed to generate the image", { status: 500 });
   try {
@@ -64,7 +74,8 @@ export default function handler(req: NextRequest) {
       ),
       {
         width: 1200,
-        height: 600,
+        height: 630,
+        fonts: [{ name: "NotoSansJP-Bold", data: fontData, style: "normal" }],
       }
     );
   } catch (e) {
