@@ -43,6 +43,7 @@ export default class AppDocument extends Document {
       <Html>
         <Head>
           <script src="https://embed.zenn.studio/js/listen-embed-event.js"></script>
+          <meta name="google-site-verification" content="FqC9DW5XJDFu9xIWisvm89zRK2lNWl4aJ6xud7V5_gk" />
         </Head>
         <body>
           <Main />
