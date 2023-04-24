@@ -1,5 +1,5 @@
 import styled, { css } from "styled-components";
-import { FontLevel, fontLevel2FontSize } from "../types/style";
+import { FontLevel, fontLevel2FontSize } from "../../types/style";
 
 export type HoverButtonProps = {
   color?: string;

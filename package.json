@@ -17,6 +17,7 @@
     "lint:ci:fmt": "yarn lint:fmt --check",
     "lint:ci": "yarn lint:ci:eslint && yarn lint:ci:fmt",
     "lint:fix": "yarn lint:eslint:fix && yarn lint:fmt:fix",
+    "typecheck": "yarn tsc --noEmit",
     "check": "yarn lint:fmt:fix && yarn lint:ci && yarn run build",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
