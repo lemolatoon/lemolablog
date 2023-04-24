@@ -1,6 +1,6 @@
 import React from "react";
 import { ImageResponse } from "@vercel/og";
-import { THEME_COLOR4, THEME_COLOR5 } from "../../styles/colors";
+import { THEME_COLOR4, THEME_COLOR5 } from "@/styles/colors";
 import { NextRequest } from "next/server";
 
 export const config = {

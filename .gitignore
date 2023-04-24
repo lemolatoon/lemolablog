@@ -41,3 +41,4 @@ next-env.d.ts
 /image.png
 /test.js
 /static
+/storybook-static

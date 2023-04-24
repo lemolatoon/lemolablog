@@ -10,13 +10,13 @@ import { FaUpload, FaImage } from "react-icons/fa";
 import { BiCaretDownSquare } from "react-icons/bi";
 import { useSession, useSupabaseClient } from "@supabase/auth-helpers-react";
 import Link from "next/link";
-import { Header } from "../src/Header/Header";
-import { BannerMenu } from "../src/components/BannerMenu";
-import { Button } from "../src/components/Button";
-import { Post } from "../src/types/supabase";
-import { THEME_COLOR4 } from "../styles/colors";
-import { Footer } from "../src/Footer/Footer";
-import { IconInput } from "../src/components/IconInput";
+import { Header } from "@/Header/Header";
+import { BannerMenu } from "@/components/BannerMenu";
+import { Button } from "@/components/Button";
+import { Post } from "@/types/supabase";
+import { THEME_COLOR4 } from "@/styles/colors";
+import { Footer } from "@/Footer/Footer";
+import { IconInput } from "@/components/IconInput";
 
 type FontFamilyKind =
   | "Ubuntu Mono"

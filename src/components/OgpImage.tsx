@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import lemolablogImage from "public/lemolablog.png";
 import Image from "next/image";
-import { THEME_COLOR4, THEME_COLOR5 } from "../../styles/colors";
+import { THEME_COLOR4, THEME_COLOR5 } from "@/styles/colors";
 
 const AbsoluteTitle = styled.div`
   position: absolute;

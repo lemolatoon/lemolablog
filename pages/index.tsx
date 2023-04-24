@@ -1,11 +1,11 @@
 import React from "react";
-import { AppContainer } from "../src/components/containers";
-import { Header } from "../src/Header/Header";
+import { AppContainer } from "@/components/containers";
+import { Header } from "@/Header/Header";
 import styled from "styled-components";
-import { usePostedTitles } from "../src/hooks/hooks";
+import { usePostedTitles } from "@/hooks/hooks";
 import Link from "next/link";
-import { Button } from "../src/components/Button";
-import { Footer } from "../src/Footer/Footer";
+import { Button } from "@/components/Button";
+import { Footer } from "@/Footer/Footer";
 
 const BlogTitleLi = styled.li`
   display: flex;

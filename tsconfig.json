@@ -1,6 +1,10 @@
 {
   "compilerOptions": {
     "target": "es6",
+    "baseUrl": "./src",
+    "paths": {
+      "@/*": ["*"]
+    },
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
