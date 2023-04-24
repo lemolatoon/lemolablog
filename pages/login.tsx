@@ -2,9 +2,9 @@ import { useSession, useSupabaseClient } from "@supabase/auth-helpers-react";
 import { Auth, ThemeSupa } from "@supabase/auth-ui-react";
 import React from "react";
 import styled from "styled-components";
-import { Button } from "../src/components/Button";
-import { AppContainer } from "../src/components/containers";
-import { Header } from "../src/Header/Header";
+import { Button } from "@/components/Button";
+import { AppContainer } from "@/components/containers";
+import { Header } from "@/Header/Header";
 
 const JustifyCenterWrapper = styled.div`
   display: flex;

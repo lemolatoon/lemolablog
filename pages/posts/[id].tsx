@@ -1,14 +1,14 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { useFetchTitleAndHtmlByPostId } from "../../src/hooks/hooks";
+import { useFetchTitleAndHtmlByPostId } from "@/hooks/hooks";
 import { useSupabaseClient } from "@supabase/auth-helpers-react";
 import { Preview } from "../edit";
-import { Header } from "../../src/Header/Header";
+import { Header } from "@/Header/Header";
 import React from "react";
 import styled from "styled-components";
-import { THEME_COLOR4 } from "../../styles/colors";
-import { Footer } from "../../src/Footer/Footer";
-import { HeadsForPost } from "../../src/components/Meta";
+import { THEME_COLOR4 } from "@/styles/colors";
+import { Footer } from "@/Footer/Footer";
+import { HeadsForPost } from "@/components/Meta";
 import { GetStaticPaths, GetStaticProps } from "next";
 import { createClient } from "@supabase/supabase-js";
 

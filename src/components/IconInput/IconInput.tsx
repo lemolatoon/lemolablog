@@ -1,7 +1,7 @@
 import React, { ComponentProps, useRef } from "react";
 import { IconType } from "react-icons";
 import styled from "styled-components";
-import { IconButton } from ".././IconButton";
+import { IconButton } from "@/components/IconButton";
 
 const TransparentInput = styled.input`
   display: none;

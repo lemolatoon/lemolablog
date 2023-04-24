@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import type { AppProps } from "next/app";
 import { createBrowserSupabaseClient } from "@supabase/auth-helpers-nextjs";
 import { SessionContextProvider, Session } from "@supabase/auth-helpers-react";
-import "../styles/global.css";
+import "@/styles/global.css";
 import "zenn-content-css";
 
 export default function App({

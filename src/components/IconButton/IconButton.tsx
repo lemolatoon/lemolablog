@@ -1,7 +1,11 @@
 import React from "react";
 import { IconType } from "react-icons/lib";
-import { FontLevel, fontLevel2FontSize } from "../../types/style";
-import { ButtonProps, HoverButton, TransparentButton } from "../Button";
+import { FontLevel, fontLevel2FontSize } from "@/types/style";
+import {
+  ButtonProps,
+  HoverButton,
+  TransparentButton,
+} from "@/components/Button";
 
 type IconButtonProps = {
   children?: React.ReactNode;

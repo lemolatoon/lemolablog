@@ -8,7 +8,7 @@ import { IconButton } from "../components/IconButton";
 import Image from "next/image";
 import lemolablogImage from "public/lemolablog.png";
 import Link from "next/link";
-import { THEME_COLOR1, THEME_COLOR3 } from "../../styles/colors";
+import { THEME_COLOR1, THEME_COLOR3 } from "@/styles/colors";
 
 type HeaderContainerProps = {
   height?: string;

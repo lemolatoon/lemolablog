@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { THEME_COLOR3 } from "../../styles/colors";
+import { THEME_COLOR3 } from "@/styles/colors";
 
 const CopyRightBox = styled.div`
   height: 50px;
