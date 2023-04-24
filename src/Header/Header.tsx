@@ -1,12 +1,11 @@
 import React from "react";
 import styled from "styled-components";
-import { Button } from "../components/Button";
-import { UnderlinedLink } from "../components/UnderlinedLink";
+import { Button } from "@/components/Button";
+import { UnderlinedLink } from "@/components/UnderlinedLink";
 import { FaSignInAlt, FaEdit } from "react-icons/fa";
 import { IconType } from "react-icons/lib";
-import { IconButton } from "../components/IconButton";
+import { IconButton } from "@/components/IconButton";
 import Image from "next/image";
-import lemolablogImage from "public/lemolablog.png";
 import Link from "next/link";
 import { THEME_COLOR1, THEME_COLOR3 } from "@/styles/colors";
 
@@ -71,7 +70,7 @@ const HeaderLink = ({ href, icon, display }: headerLinkProps) => {
 const HomeLink = ({ height }: { height: number }) => {
   return (
     <Link href="/">
-      <Image src={lemolablogImage} alt="lemolablog" height={height} />
+      <Image src="/lemolablog.png" alt="lemolablog" height={height} />
     </Link>
   );
 };
